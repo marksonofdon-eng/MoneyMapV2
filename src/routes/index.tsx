@@ -30,7 +30,7 @@ function Landing() {
           }}
           aria-hidden
         />
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-20 pt-16 sm:gap-10 sm:px-6 sm:pt-24 lg:grid lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-28 xl:grid-cols-[0.9fr_1.1fr] xl:gap-16">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-10 pt-16 sm:gap-10 sm:px-6 sm:pb-20 sm:pt-24 lg:grid lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-28 xl:grid-cols-[0.9fr_1.1fr] xl:gap-16">
           {/* Headline + explanation */}
           <div className="order-1 lg:col-start-1 lg:row-start-1">
             <h1
@@ -46,8 +46,7 @@ function Landing() {
               Beat the cost of living crisis.
             </h1>
             <p className="mt-7 max-w-xl text-base text-muted-foreground sm:mt-8 sm:text-lg">
-              MoneyMap scans your bills to find missed savings TODAY. Sign up for continuous monthly monitoring. If bills
-              increase or we find a better deal, you get alerted instantly.
+              MoneyMap scans your bills for missed savings TODAY. If we find a better deal, you get alerted instantly.
             </p>
           </div>
 
@@ -184,7 +183,7 @@ function HowItWorksSection() {
 
   return (
     <section id="how-it-works" className="scroll-mt-24 border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-10 pb-20 sm:px-6 sm:py-20 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-start lg:gap-16">
           <div className="lg:sticky lg:top-24">
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
