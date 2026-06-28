@@ -15,7 +15,7 @@ export const Route = createFileRoute("/how-it-works")({
 
 const steps = [
   { icon: Link2, title: "1. Link your accounts", body: "Connect your banks, super and credit cards in under 2 minutes via Australia's official Open Banking (CDR) system. Read-only — we can never move your money." },
-  { icon: Search, title: "2. We scan in the background", body: "MoneyHub watches your bills, subscriptions, mortgage and utility rates every single day. We compare them to the best deals on the market — so you don't have to." },
+  { icon: Search, title: "2. We scan in the background", body: "MoneyMap watches your bills, subscriptions, mortgage and utility rates every single day. We compare them to the best deals on the market — so you don't have to." },
   { icon: Bell, title: "3. One tap to save", body: "When we find real money, you get a clean alert with a Switch & Save button. Fill nothing in. Cancel anything in seconds. That's the whole job." },
 ];
 
