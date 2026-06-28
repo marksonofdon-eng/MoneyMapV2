@@ -9,7 +9,7 @@ import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MoneyMap — Put Your Savings on Cruise Control" },
+      { title: "MoneyMap — Beat the Cost of Living Crisis" },
       { name: "description", content: "MoneyMap scans your bills and bank accounts to find hidden price hikes, ditch the Loyalty Tax, and automatically grow your net worth." },
     ],
   }),
@@ -54,7 +54,7 @@ function Landing() {
             </p>
           </div>
 
-          {/* Right — 5-Colour Progress Arc */}
+          {/* Right — 4-Stage Savings Radar */}
           <div className="relative">
             <ProgressArc />
           </div>
@@ -185,12 +185,12 @@ function HowItWorksSection() {
     },
     {
       icon: Search,
-      title: "2. We scan every bill for hikes",
-      body: "MoneyMap monitors your internet, mobile, energy, utilities, insurance and subscriptions daily. We spot silent price rises and cheaper plans that match your actual usage.",
+      title: "2. We scan bills for savings",
+      body: "MoneyMap monitors your internet, mobile, energy, utilities, insurance and subscriptions using Australia's leading proprietary bill tracking technology. We spot silent price rises and cheaper plans that match your actual usage.",
     },
     {
       icon: Bell,
-      title: "3. One tap to switch and save",
+      title: "3. Switch and Save Alerts",
       body: "When we find a better deal, you get a clear alert with a Switch & Save action. No forms, no call centres, no loyalty tax — just real money back in your pocket.",
     },
   ];
@@ -209,7 +209,7 @@ function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
-          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We hunt the hikes. You keep the cash.</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We hunt the savings. You keep the cash.</h2>
           <p className="mt-4 text-muted-foreground">
             No spreadsheets. No comparison-site rabbit holes. MoneyMap automatically alerts you when a better deal is available for the same service — internet, mobile, energy, utilities, insurance and more.
           </p>
@@ -243,14 +243,13 @@ function HowItWorksSection() {
   );
 }
 
-/* --- 5-Colour Progress Arc --- */
+/* --- 4-Stage Savings Radar --- */
 function ProgressArc() {
   const stops = [
-    { c: "var(--tl-red)", label: "Action" },
-    { c: "var(--tl-orange)", label: "Breach" },
-    { c: "var(--tl-yellow)", label: "Caution" },
-    { c: "var(--tl-green)", label: "On Track" },
-    { c: "var(--tl-blue)", label: "Surge" },
+    { c: "var(--tl-red)", label: "Alert" },
+    { c: "var(--tl-orange)", label: "Assess" },
+    { c: "var(--tl-yellow)", label: "Switch" },
+    { c: "var(--tl-green)", label: "Save" },
   ];
   const [progress, setProgress] = useState(0.25);
   useEffect(() => {
@@ -273,10 +272,9 @@ function ProgressArc() {
   const py = cy + R * Math.sin(a);
 
   const tone =
-    progress < 0.2 ? stops[0] :
-    progress < 0.4 ? stops[1] :
-    progress < 0.6 ? stops[2] :
-    progress < 0.85 ? stops[3] : stops[4];
+    progress < 0.25 ? stops[0] :
+    progress < 0.5 ? stops[1] :
+    progress < 0.75 ? stops[2] : stops[3];
 
   return (
     <div className="relative mx-auto w-full max-w-md">
@@ -297,21 +295,20 @@ function ProgressArc() {
           <defs>
             <linearGradient id="arcgrad" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0%" stopColor="var(--tl-red)" />
-              <stop offset="25%" stopColor="var(--tl-orange)" />
-              <stop offset="50%" stopColor="var(--tl-yellow)" />
-              <stop offset="78%" stopColor="var(--tl-green)" />
-              <stop offset="100%" stopColor="var(--tl-blue)" />
+              <stop offset="33%" stopColor="var(--tl-orange)" />
+              <stop offset="66%" stopColor="var(--tl-yellow)" />
+              <stop offset="100%" stopColor="var(--tl-green)" />
             </linearGradient>
           </defs>
           <path d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="14" strokeLinecap="round" />
           <path d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`} fill="none" stroke="url(#arcgrad)" strokeWidth="14" strokeLinecap="round" strokeDasharray={`${Math.PI * R * progress}, ${Math.PI * R}`} />
           <circle cx={px} cy={py} r="10" fill={tone.c} stroke="#0E0F12" strokeWidth="3" />
-          <text x={cx} y={cy - 20} textAnchor="middle" fontFamily="Inter" fontSize="11" fill="#8E8E93" letterSpacing="2">PROJECTED 12 MO</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fontFamily="Inter" fontSize="28" fontWeight="700" fill="#F5F5F7">${Math.round(8400 + progress * 22000).toLocaleString()}</text>
+          <text x={cx} y={cy - 20} textAnchor="middle" fontFamily="Inter" fontSize="11" fill="#8E8E93" letterSpacing="2">3 YEAR SAVINGS</text>
+          <text x={cx} y={cy + 10} textAnchor="middle" fontFamily="Inter" fontSize="28" fontWeight="700" fill="#F5F5F7">${Math.round(progress * 10000).toLocaleString()}</text>
         </svg>
 
         <div className="mt-2 flex justify-between text-[10px] text-muted-foreground">
-          <span>Today</span><span>6 mo</span><span>12 mo</span>
+          <span>Today</span><span>Year 1</span><span>Year 3</span>
         </div>
       </div>
       <div className="pointer-events-none absolute -inset-8 -z-10 rounded-full opacity-50 blur-3xl" style={{ background: `radial-gradient(circle, ${tone.c}44, transparent 70%)` }} />
