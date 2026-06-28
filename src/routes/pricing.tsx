@@ -191,6 +191,9 @@ function PricingPage() {
         </div>
       </section>
 
+      {/* COLLECTIVE SAVINGS MISSION */}
+      <SavingsMission />
+
       {/* VALUE CALCULATOR */}
       <ValueCalculator />
 
