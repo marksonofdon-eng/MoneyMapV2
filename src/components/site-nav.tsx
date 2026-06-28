@@ -6,6 +6,7 @@ import { LinkAccountsDialog } from "./link-accounts-dialog";
 
 const tabs = [
   { to: "/how-it-works", label: "How it Works" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/dashboard", label: "My Dashboard" },
   { to: "/alerts", label: "Bill & Price Hike Alerts", badge: 2 },
   { to: "/wealth", label: "My Wealth Tool" },
