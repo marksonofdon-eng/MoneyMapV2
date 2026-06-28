@@ -86,7 +86,7 @@ export function LinkAccountsDialog({ open, onOpenChange }: { open: boolean; onOp
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/15 text-primary">
               <CheckCircle2 className="h-7 w-7" />
             </div>
-            <p className="text-sm text-muted-foreground">Head to your dashboard to see your wealth in one place.</p>
+            <p className="text-sm text-muted-foreground">Head to your Bill Savings Alerts to see what you could recover.</p>
             <Button onClick={() => close(false)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               Done
             </Button>

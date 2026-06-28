@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ArrowRight, ShieldCheck, TrendingDown, EyeOff, FileX, AlertCircle, Lock, Sparkles, Home, KeyRound, CheckCircle2, Link2, Search, Bell, Zap, Smartphone, Wifi, Droplets } from "lucide-react";
+import { ArrowRight, ShieldCheck, TrendingDown, EyeOff, FileX, AlertCircle, Lock, Home, CheckCircle2, Link2, Search, Bell, Zap, Smartphone, Wifi, Droplets, Quote, Star, Radar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "MoneyMap — Beat the Cost of Living Crisis" },
-      { name: "description", content: "MoneyMap scans your bills and bank accounts to find hidden price hikes, ditch the Loyalty Tax, and automatically grow your net worth." },
+      { name: "description", content: "MoneyMap finds bill savings today and monitors your accounts 24/7 — alerting you to price hikes, loyalty tax, and better deals before they cost you again." },
     ],
   }),
   component: Landing,
@@ -22,23 +22,32 @@ function Landing() {
     <main>
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[700px] bg-[radial-gradient(60%_60%_at_50%_0%,rgba(0,229,255,0.10),transparent_60%),radial-gradient(40%_50%_at_80%_20%,rgba(0,230,118,0.10),transparent_70%)]" />
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[700px]"
+          style={{
+            background:
+              "radial-gradient(60% 60% at 50% 0%, color-mix(in oklab, var(--tl-green) 10%, transparent), transparent 60%)",
+          }}
+          aria-hidden
+        />
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:px-8 lg:pt-28">
           {/* Left */}
           <div>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--tl-blue)" }} />
-              Australia's quietest wealth engine
+              <Radar className="h-3.5 w-3.5 text-primary" />
+              Find savings · stay on watch
             </div>
             <h1 className="font-display text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-[3.5rem]"
                 style={{ backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Beat the cost of living crisis.
             </h1>
             <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Stop overpaying today. MoneyMap works quietly in the background, scanning your bills and bank accounts to find hidden price hikes, ditch the "Loyalty Tax", and automatically grow your net worth.
+              MoneyMap finds the savings you&apos;re missing today — then keeps watching your bills in the background,
+              month after month. When rates rise, plans drift, or a better deal appears, you get alerted before the
+              loyalty tax creeps back in.
             </p>
 
-
+            <HeroMonitoringPoints className="mt-8" />
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row">
               <Button
                 size="lg"
@@ -50,7 +59,7 @@ function Landing() {
             </div>
             <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              Takes 2 minutes to scan. Secured by Australia's official Open Banking system.
+              Connect once · 24/7 monitoring · Secured via Open Banking
             </p>
           </div>
 
@@ -64,93 +73,14 @@ function Landing() {
       {/* HOW IT WORKS */}
       <HowItWorksSection />
 
-      {/* PROBLEM */}
-      <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--tl-blue)" }}>The Problem</p>
-            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Why your bills keep getting more expensive</h2>
-          </div>
+      {/* TESTIMONIALS */}
+      <CustomerTestimonialsSection />
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            <ProblemCard
-              tone="orange"
-              icon={<AlertCircle className="h-5 w-5" />}
-              title="The Loyal Customer Tax"
-              body="Companies quietly move old customers to expensive plans while saving the cheapest, unadvertised deals for brand new sign-ups."
-            />
-            <ProblemCard
-              tone="red"
-              icon={<EyeOff className="h-5 w-5" />}
-              title="The Compare-Site Scam"
-              body="Old comparison websites make you do all the work yourself, take commissions from big providers, and only offer a quick, one-off fix."
-            />
-            <ProblemCard
-              tone="yellow"
-              icon={<FileX className="h-5 w-5" />}
-              title="Too Much Admin"
-              body="Old budgeting apps fail because they force you to manually track every coffee, scan paper bills, and mess around with spreadsheets."
-            />
-          </div>
-        </div>
-      </section>
+      {/* PROBLEM */}
+      <ProblemSection />
 
       {/* SECURE VAULT */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-8 sm:p-12">
-            {/* lock matrix bg */}
-            <div className="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden>
-              <div className="grid h-full w-full grid-cols-10 gap-3 p-3">
-                {Array.from({ length: 60 }).map((_, i) => (
-                  <Lock key={i} className="h-5 w-5" />
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="mx-auto max-w-2xl text-center">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary">Your Secure Data Vault</p>
-                <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Bank-grade security. You're always in control.</h2>
-              </div>
-
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                <Pillar icon={<Lock className="h-5 w-5" />} title="Bank-Grade Encryption" body="256-bit AES. Encrypted in transit and at rest, end to end." />
-                <Pillar icon={<ShieldCheck className="h-5 w-5" />} title="APRA Regulated Open Banking" body="Accredited CDR data recipient. Audited under Australian law." />
-                <Pillar icon={<CheckCircle2 className="h-5 w-5" />} title="Read-Only Data Isolation" body="We can see your transactions. We can never move your money." />
-              </div>
-
-              {/* Mortgage teaser */}
-              <div className="mt-10 grid gap-8 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6 sm:p-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-                <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
-                    <Home className="h-3.5 w-3.5" /> The Stress-Free Home Loan Generator
-                  </div>
-                  <h3 className="mt-4 font-display text-2xl font-bold sm:text-3xl">Your automated credit passport, building quietly in the background</h3>
-                  <p className="mt-3 text-muted-foreground">
-                    Because MoneyMap automatically cleans, codes, and saves your historical bill and income data points directly from Open Banking, you are building an automated credit passport. When you are ready, skip the brokers, skip the paperwork, and tap to generate a pre-approved Australian mortgage instantly.
-                  </p>
-                </div>
-                <div className="relative glass-card rounded-2xl p-6">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/15 text-primary"><KeyRound className="h-5 w-5" /></span>
-                    <div>
-                      <p className="text-sm font-semibold">Mortgage application</p>
-                      <p className="text-xs text-muted-foreground">Auto-prefilled from your vault</p>
-                    </div>
-                  </div>
-                  <p className="mt-5 text-xs uppercase tracking-wider text-muted-foreground">Document completeness</p>
-                  <p className="mt-1 font-display text-3xl font-bold">100%</p>
-                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full w-full rounded-full bg-primary" />
-                  </div>
-                  <p className="mt-3 text-xs text-muted-foreground">Income, bills, savings &amp; utilities verified via Open Banking.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SecureVaultSection />
 
       {/* CTA */}
       <section className="border-t border-border">
@@ -163,15 +93,57 @@ function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-border py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-xs text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
-          <p>© {new Date().getFullYear()} MoneyMap Australia. CDR Accredited Data Recipient.</p>
-          <p>Built for Australians 18–65 🇦🇺</p>
-        </div>
-      </footer>
-
       <LinkAccountsDialog open={open} onOpenChange={setOpen} />
     </main>
+  );
+}
+
+const HERO_MONITORING_POINTS = [
+  {
+    icon: Search,
+    title: "Find savings",
+    body: "First scan shows what you're overpaying right now",
+  },
+  {
+    icon: Bell,
+    title: "Get alerted",
+    body: "We notify you when switching is genuinely worth it",
+  },
+  {
+    icon: Radar,
+    title: "Stay protected",
+    body: "Ongoing monitoring so savings don't slip away next quarter",
+  },
+] as const;
+
+function HeroMonitoringPoints({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+        We monitor for savings — month after month after month
+      </p>
+      <ul className="grid gap-2.5 sm:grid-cols-3 sm:gap-3">
+        {HERO_MONITORING_POINTS.map((point) => {
+          const Icon = point.icon;
+          return (
+            <li
+              key={point.title}
+              className="rounded-xl border border-border/80 bg-surface/60 px-3.5 py-3 sm:px-4 sm:py-3.5"
+            >
+              <div className="flex items-start gap-2.5">
+                <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-foreground">{point.title}</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground sm:text-xs">{point.body}</p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -205,36 +177,146 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section className="border-t border-border bg-background">
+    <section id="how-it-works" className="scroll-mt-24 border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
-          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We only make money when you save money.</h2>
-          <p className="mt-4 text-muted-foreground">
-            No spreadsheets. No comparison-site rabbit holes. MoneyMap automatically alerts you when a better deal is available for the same service — internet, mobile, energy, utilities, insurance and more.
-          </p>
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-start lg:gap-16">
+          <div className="lg:sticky lg:top-24">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
+            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We only make money when you save money.</h2>
+            <p className="mt-4 text-muted-foreground">
+              No spreadsheets. No comparison-site rabbit holes. MoneyMap automatically alerts you when a better deal is
+              available for the same service.
+            </p>
+            <div className="mt-8">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">We watch the bills that hurt most</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {categories.map((c) => (
+                  <div
+                    key={c.label}
+                    className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-muted-foreground"
+                  >
+                    <c.icon className="h-3.5 w-3.5 text-muted-foreground/70" />
+                    {c.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <ol className="relative space-y-0">
+            {steps.map((s, index) => (
+              <li key={s.title} className="relative flex gap-5 pb-10 last:pb-0">
+                {index < steps.length - 1 ? (
+                  <span
+                    className="absolute left-6 top-14 bottom-0 w-px bg-gradient-to-b from-primary/40 to-border/40"
+                    aria-hidden
+                  />
+                ) : null}
+                <div className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-primary/30 bg-primary/10 text-primary">
+                  <s.icon className="h-5 w-5" />
+                </div>
+                <Card className="flex-1 border-border bg-surface p-5 sm:p-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                    Step {index + 1}
+                  </p>
+                  <h3 className="mt-1 font-display text-lg font-semibold">{s.title.replace(/^\d+\.\s*/, "")}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                </Card>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const CUSTOMER_TESTIMONIALS = [
+  {
+    quote:
+      "I'd been on the same energy plan for four years. MoneyMap flagged a loyalty tax hike I'd never have noticed — switched in one tap and I'm saving $340 a year.",
+    name: "Sarah M.",
+    location: "Brighton, VIC",
+    savings: "$340/yr",
+    category: "Energy",
+  },
+  {
+    quote:
+      "Honestly thought our NBN and mobile bills were fine. Turned out we were overpaying on both lines. The alerts made it stupidly easy to fix.",
+    name: "James T.",
+    location: "Newcastle, NSW",
+    savings: "$960/yr",
+    category: "Mobile & NBN",
+  },
+  {
+    quote:
+      "I hate comparison sites and call centres. This just watches in the background and pings me when something's worth switching. Set and forget.",
+    name: "Priya K.",
+    location: "Fortitude Valley, QLD",
+    savings: "$420/yr",
+    category: "Utilities & subs",
+  },
+] as const;
+
+function CustomerTestimonialsSection() {
+  const [featured, ...rest] = CUSTOMER_TESTIMONIALS;
+
+  return (
+    <section className="border-t border-border bg-surface/30">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-xl">
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary">Real Australians, real savings</p>
+          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">What our customers are saying</h2>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {steps.map((s) => (
-            <Card key={s.title} className="border-border bg-surface p-6 transition-transform hover:-translate-y-0.5">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/15 text-primary">
-                <s.icon className="h-6 w-6" />
+        <div className="mt-12 grid gap-5 lg:grid-cols-2 lg:gap-6">
+          <Card className="flex flex-col border-border bg-surface p-7 sm:p-8 lg:min-h-[22rem]">
+            <Quote className="h-10 w-10 text-primary/30" aria-hidden />
+            <div className="mt-4 flex gap-0.5" aria-label="5 out of 5 stars">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+              ))}
+            </div>
+            <blockquote className="mt-5 flex-1 font-display text-lg font-medium leading-relaxed sm:text-xl">
+              &ldquo;{featured.quote}&rdquo;
+            </blockquote>
+            <div className="mt-8 flex items-end justify-between gap-4 border-t border-border/60 pt-6">
+              <div>
+                <p className="font-display text-base font-semibold">{featured.name}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{featured.location}</p>
               </div>
-              <h3 className="mt-4 font-display text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-            </Card>
-          ))}
-        </div>
+              <div className="text-right">
+                <p className="font-display text-2xl font-bold tabular-nums text-primary">{featured.savings}</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{featured.category}</p>
+              </div>
+            </div>
+          </Card>
 
-        <div className="mt-12">
-          <p className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">We watch the bills that hurt most</p>
-          <div className="mt-5 flex flex-wrap justify-center gap-3">
-            {categories.map((c) => (
-              <div key={c.label} className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-muted-foreground">
-                <c.icon className="h-4 w-4 text-primary" />
-                {c.label}
-              </div>
+          <div className="flex flex-col gap-5">
+            {rest.map((testimonial) => (
+              <Card
+                key={testimonial.name}
+                className="flex flex-1 flex-col border-border bg-surface p-5 sm:p-6"
+              >
+                <div className="flex gap-0.5" aria-label="5 out of 5 stars">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
+                  ))}
+                </div>
+                <blockquote className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </blockquote>
+                <div className="mt-5 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-display text-sm font-semibold">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">{testimonial.location}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-display text-lg font-bold tabular-nums text-primary">{testimonial.savings}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{testimonial.category}</p>
+                  </div>
+                </div>
+              </Card>
             ))}
           </div>
         </div>
@@ -242,8 +324,151 @@ function HowItWorksSection() {
     </section>
   );
 }
+function ProblemSection() {
+  const problems = [
+    {
+      tone: "orange" as const,
+      icon: <AlertCircle className="h-5 w-5" />,
+      title: "The Loyal Customer Tax",
+      body: "Companies quietly move old customers to expensive plans while saving the cheapest, unadvertised deals for brand new sign-ups.",
+    },
+    {
+      tone: "red" as const,
+      icon: <EyeOff className="h-5 w-5" />,
+      title: "The Compare-Site Scam",
+      body: "Old comparison websites make you do all the work yourself, take commissions from big providers, and only offer a quick, one-off fix.",
+    },
+    {
+      tone: "yellow" as const,
+      icon: <FileX className="h-5 w-5" />,
+      title: "Too Much Admin",
+      body: "Old budgeting apps fail because they force you to manually track every coffee, scan paper bills, and mess around with spreadsheets.",
+    },
+  ];
 
-/* --- 4-Stage Savings Radar --- */
+  return (
+    <section className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">The Problem</p>
+            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Why your bills keep getting more expensive</h2>
+          </div>
+          <p className="text-muted-foreground lg:pb-1 lg:text-right">
+            Most Australians are overpaying on autopilot — not because they&apos;re careless, but because the system is
+            designed to reward churn, not loyalty.
+          </p>
+        </div>
+
+        <div className="mt-12 space-y-4">
+          {problems.map((problem, index) => (
+            <ProblemRow key={problem.title} {...problem} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SecureVaultSection() {
+  const pillars = [
+    {
+      icon: <Lock className="h-5 w-5" />,
+      title: "Bank-Grade Encryption",
+      body: "256-bit AES. Encrypted in transit and at rest, end to end.",
+    },
+    {
+      icon: <ShieldCheck className="h-5 w-5" />,
+      title: "APRA Regulated Open Banking",
+      body: "Accredited CDR data recipient. Audited under Australian law.",
+    },
+    {
+      icon: <CheckCircle2 className="h-5 w-5" />,
+      title: "Read-Only Data Isolation",
+      body: "We can see your transactions. We can never move your money.",
+    },
+  ];
+
+  return (
+    <section className="border-t border-border">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-8 sm:p-12">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden>
+            <div className="grid h-full w-full grid-cols-10 gap-3 p-3">
+              {Array.from({ length: 60 }).map((_, i) => (
+                <Lock key={i} className="h-5 w-5" />
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="max-w-2xl">
+              <p className="eyebrow-blue">Your Secure Data Vault</p>
+              <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+                Bank-grade security. You&apos;re always in control.
+              </h2>
+            </div>
+
+            <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-background/40">
+              <div className="grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
+                {pillars.map((pillar) => (
+                  <Pillar key={pillar.title} {...pillar} />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10 grid gap-8 rounded-2xl border border-tl-blue/25 bg-gradient-to-br from-tl-blue/10 via-transparent to-transparent p-6 sm:p-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+              <div>
+                <div className="badge-blue inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium">
+                  <ShieldCheck className="h-3.5 w-3.5" /> Consumer Data Right
+                </div>
+                <h3 className="mt-4 font-display text-2xl font-bold sm:text-3xl">
+                  You grant access. You can revoke it anytime.
+                </h3>
+                <p className="mt-3 text-muted-foreground">
+                  MoneyMap connects through Australia&apos;s official Open Banking framework — the same regulated
+                  system your bank uses. You choose which accounts to link, we only ever receive read-only data, and
+                  you can disconnect in one tap. Your data is never sold or shared with advertisers.
+                </p>
+              </div>
+              <div className="relative glass-card rounded-2xl p-6">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-tl-blue/15 text-tl-blue">
+                    <Lock className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold">Vault connection</p>
+                    <p className="text-xs text-muted-foreground">Secured via official CDR gateway</p>
+                  </div>
+                </div>
+                <p className="mt-5 text-xs uppercase tracking-wider text-muted-foreground">Encryption status</p>
+                <p className="mt-1 font-display text-3xl font-bold text-tl-blue">AES-256</p>
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+                  <div className="h-full w-full rounded-full bg-tl-blue" />
+                </div>
+                <ul className="mt-4 space-y-2 text-xs text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-tl-blue" />
+                    Read-only access — we can never move your money
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-tl-blue" />
+                    APRA-regulated CDR accredited recipient
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-tl-blue" />
+                    Encrypted in transit and at rest, end to end
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ProgressArc() {
   const stops = [
     { c: "var(--tl-red)", label: "Bill Alert" },
@@ -316,24 +541,54 @@ function ProgressArc() {
   );
 }
 
-function ProblemCard({ icon, title, body, tone }: { icon: React.ReactNode; title: string; body: string; tone: "orange" | "red" | "yellow" }) {
+function ProblemRow({
+  icon,
+  title,
+  body,
+  tone,
+  index,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  tone: "orange" | "red" | "yellow";
+  index: number;
+}) {
   const colorMap = { orange: "var(--tl-orange)", red: "var(--tl-red)", yellow: "var(--tl-yellow)" };
   const c = colorMap[tone];
+
   return (
-    <Card className="border-border bg-surface p-6 transition-transform hover:-translate-y-0.5">
-      <div className="grid h-10 w-10 place-items-center rounded-lg" style={{ background: `${c}1F`, color: c }}>{icon}</div>
-      <h3 className="mt-4 font-display text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
-    </Card>
+    <div className="group flex flex-col gap-5 rounded-2xl border border-border bg-surface p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-7">
+      <div
+        className="grid h-12 w-12 shrink-0 place-items-center rounded-xl sm:h-14 sm:w-14"
+        style={{ background: `${c}1F`, color: c }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-3">
+          <span
+            className="font-display text-3xl font-bold tabular-nums leading-none opacity-20"
+            style={{ color: c }}
+            aria-hidden
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <h3 className="font-display text-lg font-semibold sm:text-xl">{title}</h3>
+        </div>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:mt-2.5">{body}</p>
+      </div>
+      <span className="hidden h-px flex-1 bg-border/60 lg:block lg:max-w-[4rem]" aria-hidden />
+    </div>
   );
 }
 
 function Pillar({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background/40 p-5">
-      <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/15 text-primary">{icon}</div>
-      <h4 className="mt-3 font-display text-base font-semibold">{title}</h4>
-      <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+    <div className="p-6 sm:p-7">
+      <div className="grid h-9 w-9 place-items-center rounded-lg bg-tl-blue/15 text-tl-blue">{icon}</div>
+      <h4 className="mt-4 font-display text-base font-semibold">{title}</h4>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
     </div>
   );
 }

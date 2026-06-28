@@ -1,433 +1,867 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Zap, Wifi, Smartphone, Dumbbell, Umbrella, X, CheckCircle2, ArrowRight, Loader2, Layers, ShieldCheck, Shield, Activity, Flame, AlertCircle, AlertTriangle } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import {
+  Zap,
+  Wifi,
+  Smartphone,
+  Dumbbell,
+  ArrowRight,
+  ShieldCheck,
+  Shield,
+  Activity,
+  Sparkles,
+  Radar,
+  CreditCard,
+  Landmark,
+  UserPlus,
+  Receipt,
+  ArrowLeftRight,
+  PiggyBank,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/alerts")({
   head: () => ({
     meta: [
-      { title: "Bill & Price Hike Alerts — MoneyMap" },
-      { name: "description", content: "MoneyMap's autonomous engine catches price hikes and wasted subscriptions, with one-tap fixes." },
+      { title: "Bill Savings Alerts — MoneyMap" },
+      {
+        name: "description",
+        content:
+          "MoneyMap reviews your expenses, finds savings in our market database, and proposes one-tap switches — month after month. No savings found, no pay.",
+      },
     ],
   }),
   component: Alerts,
 });
 
-function fmt(n: number) {
-  return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
+interface TodayAction {
+  id: string;
+  icon: LucideIcon;
+  category: string;
+  saveLabel: string;
+  title: string;
 }
 
-function Alerts() {
-  const [switchOpen, setSwitchOpen] = useState(false);
-  const [actioned, setActioned] = useState<string[]>([]);
+interface WatchItem {
+  id: string;
+  icon: LucideIcon;
+  category: string;
+  saveLabel: string;
+  title: string;
+  eta: string;
+}
 
-  const markDone = (id: string, msg: string) => {
-    setActioned((a) => [...a, id]);
-    toast.success(msg);
-  };
+interface LeakItem {
+  label: string;
+  amount: number;
+  icon: LucideIcon;
+}
 
+const YESTERDAY_LEAKS: LeakItem[] = [
+  { label: "Energy loyalty tax", amount: 340, icon: Zap },
+  { label: "Mobile overpay · 2 lines", amount: 720, icon: Smartphone },
+  { label: "NBN plan drift", amount: 240, icon: Wifi },
+  { label: "Unused subscriptions", amount: 300, icon: CreditCard },
+  { label: "Bank & account fees", amount: 96, icon: Landmark },
+];
+
+const YESTERDAY_TOTAL = YESTERDAY_LEAKS.reduce((sum, item) => sum + item.amount, 0);
+
+const PAGE_STATS = [
+  { label: "Missed last year", value: 1696, highlight: "loss" as const },
+  { label: "Savings available today", value: 580, highlight: "savings" as const },
+  { label: "Savings next year", value: 606, highlight: null },
+] as const;
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    title: "Sign up to MoneyMap",
+    description: "Create your account in under a minute — no card required to start.",
+    icon: UserPlus,
+  },
+  {
+    title: "Connect to Australian Government Open Banking",
+    description: "Securely link your accounts via the Consumer Data Right — read-only, bank-grade encryption.",
+    icon: Landmark,
+  },
+  {
+    title: "Review expenses",
+    description: "MoneyMap categorises every bill, subscription, and fee across your linked accounts.",
+    icon: Receipt,
+  },
+  {
+    title: "Identify switch savings",
+    description: "We match your usage to cheaper equivalents in our live market database.",
+    icon: ArrowLeftRight,
+  },
+  {
+    title: "Save money",
+    description: "Queue one-tap switches and let autopilot keep watching — no savings found, no pay.",
+    icon: PiggyBank,
+  },
+] as const;
+
+function AlertsHeroSection({
+  alertCount,
+  previewActions,
+  onActivate,
+}: {
+  alertCount: number;
+  previewActions: TodayAction[];
+  onActivate: () => void;
+}) {
   return (
-    <main className="bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <header className="mb-12 max-w-3xl animate-fade-in">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">Bill & Price Hike Alerts</p>
-          <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Real money back in your pocket — quietly.</h1>
-          <p className="mt-4 text-muted-foreground">The autonomous engine works in the background. We only ping you when there's real money to save.</p>
-        </header>
+    <section className="relative overflow-hidden border-b border-border">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-full min-h-[32rem] page-hero-glow"
+        aria-hidden
+      />
 
-        {/* Timeline Section */}
-        <TimelineSection />
-
-        {/* SECTION 1 — Immediate Actions */}
-        <section>
-          <div className="mb-6 flex items-center gap-3 animate-fade-in">
-            <span className="relative grid h-9 w-9 place-items-center rounded-lg" style={{ background: "color-mix(in oklab, var(--tl-red) 15%, transparent)", color: "var(--tl-red)" }}>
-              <AlertCircle className="h-5 w-5" />
-              <span className="absolute inset-0 rounded-lg animate-ping opacity-30" style={{ background: "var(--tl-red)" }} />
-            </span>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">Immediate Actions <span className="text-muted-foreground font-normal">(Today)</span></h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="animate-fade-in" style={{ animationDelay: "60ms", animationFillMode: "backwards" }}>
-              <AlertCard
-                tone="orange"
-                icon={<Zap className="h-6 w-6" />}
-                indicator={<AlertTriangle className="h-4 w-4" style={{ color: "var(--tl-orange)" }} />}
-                tag="Autonomous Switch · Energy"
-                title="Your energy retailer increased your rate by 14% this morning."
-                subtitle="Based on your last 12 months, switching to a cheaper equivalent retailer saves you $340/yr."
-                primary={
-                  <Button size="lg" onClick={() => setSwitchOpen(true)} className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green group">
-                    Switch & Save $340/yr <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                }
-              />
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,22rem)] lg:items-center lg:gap-12 xl:gap-16">
+          <div>
+            <div className="badge-blue mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs">
+              <Activity className="h-3.5 w-3.5" />
+              Bill Savings Alerts · live scan
             </div>
-
-            <div className="animate-fade-in" style={{ animationDelay: "120ms", animationFillMode: "backwards" }}>
-              <AlertCard
-                tone="orange"
-                icon={<Wifi className="h-6 w-6" />}
-                indicator={<AlertTriangle className="h-4 w-4" style={{ color: "var(--tl-orange)" }} />}
-                tag="Autonomous Switch · Home Internet"
-                title="A faster NBN plan just dropped below what you're paying."
-                subtitle="Same speed tier, same unlimited data, same uptime SLA — switching saves you $20/mo ($240/yr)."
-                primary={
-                  <Button
-                    size="lg"
-                    onClick={() => markDone("internet", "Internet switch queued — confirm via email")}
-                    disabled={actioned.includes("internet")}
-                    className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green disabled:opacity-60 group"
-                  >
-                    {actioned.includes("internet")
-                      ? <><CheckCircle2 className="mr-1 h-4 w-4" /> Switch queued</>
-                      : <>Switch & Save $20/mo <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" /></>}
-                  </Button>
-                }
-              />
+            <h1
+              className="max-w-xl font-display text-[2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl lg:text-[2.85rem]"
+              style={{
+                backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {fmtAud(TODAY_RECOVERABLE)} sitting on your table.
+            </h1>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {alertCount} bill switches are ready right now. Activate MoneyMap to recover what slipped through last
+              year — and let autopilot watch tomorrow&apos;s bills for you.
+            </p>
+            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row">
+              <Button
+                size="lg"
+                onClick={onActivate}
+                className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green group"
+              >
+                Activate MoneyMap
+                <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Button>
+              <a
+                href="#savings-feed"
+                className="inline-flex h-12 items-center rounded-lg border border-border bg-background/40 px-5 text-sm font-medium text-foreground/90 transition-colors hover:bg-background/70"
+              >
+                See your full feed
+              </a>
             </div>
-
-            <div className="animate-fade-in" style={{ animationDelay: "180ms", animationFillMode: "backwards" }}>
-              <AlertCard
-                tone="orange"
-                icon={<Smartphone className="h-6 w-6" />}
-                indicator={<AlertTriangle className="h-4 w-4" style={{ color: "var(--tl-orange)" }} />}
-                tag="Autonomous Switch · Mobile (2 lines)"
-                title="Both phone plans on your account are overpriced for your usage."
-                subtitle="An equivalent 5G plan on the same network coverage saves $30/mo per line — $60/mo across your 2 phones ($720/yr)."
-                primary={
-                  <Button
-                    size="lg"
-                    onClick={() => markDone("mobile", "Mobile switch queued for both lines")}
-                    disabled={actioned.includes("mobile")}
-                    className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green disabled:opacity-60 group"
-                  >
-                    {actioned.includes("mobile")
-                      ? <><CheckCircle2 className="mr-1 h-4 w-4" /> Switch queued</>
-                      : <>Switch Both & Save $60/mo <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" /></>}
-                  </Button>
-                }
-              />
-            </div>
-
-            <div className="animate-fade-in" style={{ animationDelay: "240ms", animationFillMode: "backwards" }}>
-              <AlertCard
-                tone="yellow"
-                icon={<Dumbbell className="h-6 w-6" />}
-                indicator={<AlertTriangle className="h-4 w-4" style={{ color: "var(--tl-yellow)" }} />}
-                tag="AI Scanner · Unused Subscription"
-                title="Unused subscription alert."
-                subtitle="You've been charged $24.99/mo for a gym membership for 4 months straight, but your linked check-in data shows zero visits. That's $300/yr quietly walking out the door."
-                primary={
-                  <Button
-                    size="lg"
-                    onClick={() => markDone("gym", "Cancellation queued — confirm via email")}
-                    disabled={actioned.includes("gym")}
-                    className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green disabled:opacity-60 group"
-                  >
-                    {actioned.includes("gym")
-                      ? <><CheckCircle2 className="mr-1 h-4 w-4" /> Cancellation queued</>
-                      : <><X className="mr-1 h-4 w-4" /> Cancel Instantly <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" /></>}
-                  </Button>
-                }
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 2 — Monthly Comprehensive Review Network */}
-        <section className="mt-20">
-          <div className="mb-6 max-w-3xl animate-fade-in">
-            <div className="flex items-center gap-3">
-              <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/15 text-primary">
-                <Layers className="h-5 w-5" />
-              </span>
-              <h2 className="font-display text-2xl font-bold sm:text-3xl">Your Monthly Comprehensive Review Network</h2>
-            </div>
-            <p className="mt-3 text-muted-foreground">
-              Our conflict-free AI scans the entire Australian market every 30 days against your open banking profile to flag cheaper equivalent products or structural cost drains.
+            <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-tl-blue" />
+              Updated this morning · Secured via Australian Open Banking
             </p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: <Smartphone className="h-6 w-6" />, title: "Cheaper Mobile Plan", body: "A new equivalent 5G plan matching your exact 42GB/mo average usage just hit the market on the same coverage network you already use.", cta: "Save $15/mo Instantly" },
-              { icon: <Wifi className="h-6 w-6" />, title: "NBN Price Drop", body: "A new equivalent NBN 50 wholesale tier has launched. Same speed, same data, lower bill — switch your live connection seamlessly.", cta: "Save $22/mo Instantly" },
-              { icon: <Layers className="h-6 w-6" />, title: "Duplicate Bank Fees", body: "You're paying an unnecessary monthly account-keeping fee on an idle secondary savings account that hasn't moved in 11 months.", cta: "Consolidate & Wipe Fee" },
-              { icon: <ShieldCheck className="h-6 w-6" />, title: "Car Insurance Premium", body: "Based on your updated clean driving record, a conflict-free market scan shows your current policy is materially overpriced.", cta: "Save $140/yr" },
-              { icon: <Flame className="h-6 w-6" />, title: "Off-Peak Gas Tariff", body: "New seasonal winter gas baseline pricing has dropped. Your current variable tariff can be optimised for instant protection.", cta: "Apply Lower Tariff" },
-            ].map((c, i) => (
-              <div key={c.title} className="animate-fade-in" style={{ animationDelay: `${i * 70}ms`, animationFillMode: "backwards" }}>
-                <ReviewCard icon={c.icon} title={c.title} body={c.body} cta={c.cta} />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* SECTION 3 — Rainy Day Safety Index */}
-        <section className="mt-20 animate-fade-in">
-          <Card className="relative overflow-hidden border-border glass-card p-8 sm:p-10" style={{ boxShadow: "0 30px 80px -50px rgba(0,230,118,0.6)" }}>
-            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl" style={{ background: "radial-gradient(circle, rgba(0,230,118,0.35), transparent 70%)" }} />
-            <div className="relative flex flex-wrap items-start gap-6">
-              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary">
-                <Umbrella className="h-7 w-7" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">Rainy Day Calculator · Safety Index</p>
-                <div className="mt-2 flex items-baseline gap-3">
-                  <span className="font-display text-6xl font-bold text-primary tracking-tight" style={{ textShadow: "0 0 30px rgba(0,230,118,0.35)" }}>74</span>
-                  <span className="font-display text-xl font-semibold text-foreground">Days</span>
-                </div>
-                <p className="mt-2 max-w-xl text-sm text-muted-foreground">How long you can comfortably survive if your income stopped tomorrow — based on your live living expenses.</p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  <Metric label="Liquid cash" value={fmt(12400)} />
-                  <Metric label="Monthly essentials" value={fmt(3525)} />
-                  <Metric label="Aussie average" value="42 days" />
-                </div>
-              </div>
-            </div>
-          </Card>
-        </section>
-      </div>
-
-      <SwitchDialog open={switchOpen} onOpenChange={setSwitchOpen} />
-    </main>
-  );
-}
-
-function AlertCard({ tone, icon, indicator, tag, title, subtitle, primary }: {
-  tone: "orange" | "yellow" | "red"; icon: React.ReactNode; indicator?: React.ReactNode; tag: string; title: string; subtitle: string; primary: React.ReactNode;
-}) {
-  const c = tone === "orange" ? "var(--tl-orange)" : tone === "yellow" ? "var(--tl-yellow)" : "var(--tl-red)";
-  return (
-    <Card
-      className="group relative overflow-hidden border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:p-7"
-      style={{ borderColor: `color-mix(in oklab, ${c} 35%, var(--border))` }}
-    >
-      <span
-        className="pointer-events-none absolute inset-y-0 left-0 w-[3px] opacity-70 transition-opacity group-hover:opacity-100"
-        style={{ background: `linear-gradient(180deg, ${c}, transparent)` }}
-      />
-      <div className="relative flex flex-wrap items-start gap-5">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-transform duration-300 group-hover:scale-110" style={{ background: `${c}1F`, color: c }}>
-          {icon}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {indicator}
-            <span className="rounded-full px-2.5 py-0.5 text-xs font-medium" style={{ background: `${c}1F`, color: c }}>{tag}</span>
-          </div>
-          <h3 className="mt-3 font-display text-xl font-bold sm:text-2xl">{title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {primary}
-            <Button variant="ghost" className="h-12 px-4 text-muted-foreground hover:text-foreground">Dismiss</Button>
-          </div>
+          <TodayFocalCard
+            alertCount={alertCount}
+            previewActions={previewActions}
+            onActivate={onActivate}
+          />
         </div>
-      </div>
-    </Card>
-  );
-}
 
-function ReviewCard({ icon, title, body, cta }: { icon: React.ReactNode; title: string; body: string; cta: string }) {
-  return (
-    <Card className="group flex h-full flex-col border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_20px_60px_-30px_rgba(0,230,118,0.4)]">
-      <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/15 text-primary transition-transform duration-300 group-hover:scale-110">{icon}</div>
-      <h3 className="mt-4 font-display text-lg font-semibold">{title}</h3>
-      <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{body}</p>
-      <Button className="mt-5 w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
-        {cta} <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-      </Button>
-    </Card>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-background/50 p-3 transition-colors hover:border-primary/40">
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-base font-semibold">{value}</p>
-    </div>
-  );
-}
-
-function TimelineSection() {
-  const steps = [
-    {
-      phase: "yesterday",
-      heading: "Yesterday",
-      badge: "Unprotected",
-      badgeTone: "amber" as const,
-      icon: <AlertTriangle className="h-5 w-5" />,
-      content: "No active monitoring. Price hikes go unnoticed, loyalty taxes accumulate, and hidden savings are missed entirely.",
-      muted: true,
-    },
-    {
-      phase: "today",
-      heading: "Today",
-      badge: "Active Scan",
-      badgeTone: "green" as const,
-      icon: <Activity className="h-5 w-5" />,
-      content: "MoneyMap deploys. The autonomous engine instantly scans your bills, targets overcharges, and unlocks immediate cash savings.",
-      active: true,
-    },
-    {
-      phase: "tomorrow",
-      heading: "Tomorrow",
-      badge: "Continuous Defense",
-      badgeTone: "green" as const,
-      icon: <Shield className="h-5 w-5" />,
-      content: "Relentless background tracking. Whenever a cheaper product appears or an existing provider raises rates, your wealth stays guarded.",
-      muted: false,
-    },
-  ];
-
-  return (
-    <section className="relative mb-16 pt-5 animate-fade-in">
-      {/* Desktop timeline track */}
-      <div className="pointer-events-none absolute top-5 left-0 right-0 hidden h-0.5 md:block bg-gradient-to-r from-[var(--tl-yellow)]/20 via-primary/50 to-primary/20" />
-      {/* Mobile timeline track */}
-      <div className="pointer-events-none absolute left-5 top-0 bottom-0 w-0.5 md:hidden bg-gradient-to-b from-[var(--tl-yellow)]/20 via-primary/50 to-primary/20" />
-
-      <div className="flex flex-col gap-6 md:flex-row md:gap-4">
-        {steps.map((step, i) => (
-          <div
-            key={step.phase}
-            className="relative flex-1 animate-fade-in"
-            style={{ animationDelay: `${i * 120}ms`, animationFillMode: "backwards" }}
-          >
-            <TimelineCard {...step} />
-          </div>
-        ))}
+        <SavingsJourneyStrip className="mt-12" />
       </div>
     </section>
   );
 }
 
-function TimelineCard({
-  heading,
-  badge,
-  badgeTone,
-  icon,
-  content,
-  active,
-  muted,
+function TodayFocalCard({
+  alertCount,
+  previewActions,
+  onActivate,
 }: {
-  heading: string;
-  badge: string;
-  badgeTone: "amber" | "green";
-  icon: React.ReactNode;
-  content: string;
-  active?: boolean;
-  muted?: boolean;
+  alertCount: number;
+  previewActions: TodayAction[];
+  onActivate: () => void;
 }) {
-  const accent = badgeTone === "amber" ? "var(--tl-yellow)" : "var(--tl-green)";
-  const badgeClasses =
-    badgeTone === "amber"
-      ? "bg-[var(--tl-yellow)]/10 text-[var(--tl-yellow)]"
-      : "bg-primary/10 text-primary";
-
   return (
-    <Card
-      className={cn(
-        "group relative p-6 pt-12 pl-12 md:pl-6 md:pt-12 transition-all duration-300 hover:-translate-y-0.5",
-        muted ? "bg-surface/60 border-white/5 opacity-90" : "bg-surface border-border",
-        active && "border-primary/50 shadow-[0_20px_60px_-30px_rgba(0,230,118,0.35)]"
-      )}
-    >
-      {/* Timeline node */}
-      <span
-        className={cn(
-          "absolute top-0 z-20 grid h-10 w-10 place-items-center rounded-full border bg-surface transition-transform duration-300 group-hover:scale-110",
-          active ? "border-primary/50" : "border-border",
-          "left-5 -translate-x-1/2 -translate-y-1/2 md:left-1/2"
-        )}
-        style={{ color: accent }}
+    <div className="relative mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none">
+      <div
+        className="glass-card relative overflow-hidden rounded-3xl border border-primary/25 p-6 sm:p-7"
+        style={{ boxShadow: "0 30px 80px -35px color-mix(in oklab, var(--primary) 45%, transparent)" }}
       >
-        {icon}
-        {active && (
-          <span className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ background: accent }} />
-        )}
-      </span>
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 70% at 50% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 65%)",
+          }}
+          aria-hidden
+        />
 
-      <div className="relative">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className={cn("font-display text-xl font-bold", active ? "text-primary" : "text-foreground")}>
-            {heading}
-          </h3>
-          <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", badgeClasses)}>
-            {badge}
-          </span>
+        <div className="relative">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-50" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">Recover · Today</p>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Scan complete</p>
+          </div>
+
+          <p className="mt-6 font-display text-5xl font-bold tabular-nums leading-none text-primary drop-shadow-[0_0_24px_color-mix(in_oklab,var(--primary)_30%,transparent)] sm:text-6xl">
+            {fmtAud(TODAY_RECOVERABLE)}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {alertCount} alert{alertCount === 1 ? "" : "s"} ready to action
+          </p>
+
+          <ul className="mt-5 space-y-2 border-t border-border/50 pt-5">
+            {previewActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <li key={action.id} className="flex items-center gap-2.5 text-xs">
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
+                  <span className="min-w-0 flex-1 truncate text-muted-foreground">
+                    <span className="text-foreground/85">{action.category}</span>
+                    {" · "}
+                    {action.title}
+                  </span>
+                  <span className="shrink-0 font-semibold tabular-nums text-primary">{action.saveLabel}</span>
+                </li>
+              );
+            })}
+            {alertCount > previewActions.length ? (
+              <li className="pt-1 text-[11px] text-muted-foreground">
+                +{alertCount - previewActions.length} more in your feed
+              </li>
+            ) : null}
+          </ul>
+
+          <Button
+            onClick={onActivate}
+            className="mt-6 h-11 w-full bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90 glow-green"
+          >
+            Recover these savings
+          </Button>
         </div>
-        <p className={cn("mt-3 text-sm leading-relaxed", muted ? "text-muted-foreground/70" : "text-muted-foreground")}>
-          {content}
-        </p>
       </div>
-    </Card>
+      <div
+        className="pointer-events-none absolute -inset-6 -z-10 rounded-full opacity-40 blur-3xl"
+        style={{ background: "radial-gradient(circle, color-mix(in oklab, var(--primary) 25%, transparent), transparent 70%)" }}
+        aria-hidden
+      />
+    </div>
   );
 }
 
-function SwitchDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setDone(true); toast.success("Switch request sent to your new retailer"); }, 1200);
-  }
+function SavingsJourneyStrip({ className }: { className?: string }) {
   return (
-    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setTimeout(() => setDone(false), 200); }}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-display text-2xl">One-click energy switch</DialogTitle>
-          <DialogDescription>We've pre-filled your profile from your MoneyMap vault. Saving <span className="text-primary font-semibold">$340/yr</span>.</DialogDescription>
-        </DialogHeader>
+    <div
+      className={cn(
+        "grid overflow-hidden rounded-2xl border border-border/80 bg-surface/50 backdrop-blur-sm sm:grid-cols-[1fr_auto_1.15fr_auto_1fr]",
+        className,
+      )}
+    >
+      {PAGE_STATS.map((stat, index) => {
+        const isToday = stat.highlight === "savings";
+        const isLoss = stat.highlight === "loss";
+        const isProtect = index === 2;
 
-        {done ? (
-          <div className="space-y-4 py-4 text-center">
-            <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/15 text-primary">
-              <CheckCircle2 className="h-7 w-7" />
+        return (
+          <div key={stat.label} className="contents">
+            {index > 0 ? (
+              <div className="hidden items-center justify-center px-2 sm:flex" aria-hidden>
+                <ArrowRight className="h-4 w-4 text-border" />
+              </div>
+            ) : null}
+            <div
+              className={cn(
+                "border-b border-border/60 px-5 py-4 last:border-b-0 sm:border-b-0 sm:px-6 sm:py-5",
+                isToday && "bg-primary/[0.06] sm:ring-1 sm:ring-inset sm:ring-primary/20",
+                isProtect && "bg-tl-blue/[0.05] sm:ring-1 sm:ring-inset sm:ring-tl-blue/20",
+              )}
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {index === 0 ? "Leak" : index === 1 ? "Recover" : "Protect"}
+              </p>
+              <p
+                className={cn(
+                  "mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl",
+                  isLoss && "text-[var(--tl-red)]",
+                  isToday && "text-primary",
+                  !isLoss && !isToday && "text-tl-blue",
+                )}
+              >
+                {fmtAud(stat.value)}
+              </p>
+              <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{stat.label}</p>
             </div>
-            <p className="text-sm text-muted-foreground">Your new retailer will be in touch within 1 business day. Your old account closes automatically.</p>
-            <Button onClick={() => onOpenChange(false)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Done</Button>
           </div>
-        ) : (
-          <form onSubmit={submit} className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="fn">First name</Label>
-                <Input id="fn" defaultValue="Sam" />
+        );
+      })}
+    </div>
+  );
+}
+
+const TODAY_RECOVERABLE = 580;
+const TOMORROW_QUEUED = 606;
+
+function fmtAud(n: number) {
+  return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 }).format(n);
+}
+
+function Alerts() {
+  const [linkOpen, setLinkOpen] = useState(false);
+
+  const todayActions: TodayAction[] = [
+    {
+      id: "energy",
+      icon: Zap,
+      category: "Energy",
+      saveLabel: "$340/yr",
+      title: "Rate hike detected this morning",
+    },
+    {
+      id: "internet",
+      icon: Wifi,
+      category: "NBN",
+      saveLabel: "$20/mo",
+      title: "Faster plan, lower price",
+    },
+    {
+      id: "mobile",
+      icon: Smartphone,
+      category: "Mobile · 2 lines",
+      saveLabel: "$60/mo",
+      title: "Both plans overpriced for usage",
+    },
+    {
+      id: "gym",
+      icon: Dumbbell,
+      category: "Subscription",
+      saveLabel: "$300/yr",
+      title: "Gym membership unused · 4 months",
+    },
+  ];
+
+  const watchQueue: WatchItem[] = [
+    {
+      id: "mobile-scan",
+      icon: Smartphone,
+      category: "Mobile",
+      saveLabel: "$15/mo",
+      title: "New 5G plan matches your 42GB average",
+      eta: "Next scan · 12 days",
+    },
+    {
+      id: "nbn-scan",
+      icon: Wifi,
+      category: "NBN",
+      saveLabel: "$22/mo",
+      title: "Wholesale NBN 50 tier repriced lower",
+      eta: "Queued · this week",
+    },
+    {
+      id: "fees",
+      icon: Sparkles,
+      category: "Banking",
+      saveLabel: "$96/yr",
+      title: "Idle account still paying keeping fees",
+      eta: "Review · 18 days",
+    },
+    {
+      id: "insurance",
+      icon: ShieldCheck,
+      category: "Insurance",
+      saveLabel: "$140/yr",
+      title: "Car policy overpriced vs clean record",
+      eta: "Renewal window · 24 days",
+    },
+    {
+      id: "gas",
+      icon: Radar,
+      category: "Gas",
+      saveLabel: "$18/mo",
+      title: "Winter off-peak tariff now available",
+      eta: "Seasonal · 6 days",
+    },
+  ];
+
+  return (
+    <main className="bg-background">
+      <AlertsHeroSection
+        alertCount={todayActions.length}
+        previewActions={todayActions.slice(0, 2)}
+        onActivate={() => setLinkOpen(true)}
+      />
+
+      <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
+        <section id="savings-feed" className="scroll-mt-24">
+          <div className="mb-6 max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">Your savings feed</p>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              Yesterday&apos;s leaks. Today&apos;s recoveries. Tomorrow on watch.
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Scroll the three phases below — or jump from the overview inside the feed.
+            </p>
+          </div>
+
+          <Panel className="animate-fade-in">
+            <div id="savings-feed-panel">
+              <SavingsFeedBridge />
+
+              <FeedDetailBreak />
+
+              <FeedPhase
+                id="savings-yesterday"
+                phase="Yesterday"
+                tone="loss"
+                context="Last year, while MoneyMap wasn't active"
+                total={fmtAud(YESTERDAY_TOTAL)}
+                totalCaption={`${YESTERDAY_LEAKS.length} leaks identified`}
+              >
+                <YesterdayLossContent />
+              </FeedPhase>
+
+              <FeedPhase
+                id="savings-today"
+                phase="Today"
+                tone="savings"
+                context="Recoverable right now"
+                total={fmtAud(TODAY_RECOVERABLE)}
+                totalCaption={`${todayActions.length} alert${todayActions.length === 1 ? "" : "s"} ready`}
+              >
+                <RecoverTodayContent actions={todayActions} onActivate={() => setLinkOpen(true)} />
+              </FeedPhase>
+
+              <FeedPhase
+                id="savings-tomorrow"
+                phase="Tomorrow"
+                tone="neutral"
+                context="Queued on autopilot"
+                total={fmtAud(TOMORROW_QUEUED)}
+                totalCaption={`${watchQueue.length} items on watch`}
+                last
+              >
+                <AutopilotWatchContent items={watchQueue} />
+              </FeedPhase>
+            </div>
+          </Panel>
+        </section>
+
+        <HowItWorksSection />
+
+        <Panel variant="default" className="border-border/80">
+          <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10 lg:p-10">
+            <div className="lg:col-span-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">No savings, no pay</p>
+              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Stop the leak before the next quarter turns red.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Connect once. MoneyMap handles reviewing, alerting, and proposing switches on repeat.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:flex lg:justify-end">
+              <Button
+                onClick={() => setLinkOpen(true)}
+                size="lg"
+                className="h-12 w-full bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green group sm:w-auto"
+              >
+                Activate MoneyMap
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Button>
+            </div>
+          </div>
+        </Panel>
+      </div>
+
+      <LinkAccountsDialog open={linkOpen} onOpenChange={setLinkOpen} />
+    </main>
+  );
+}
+
+/* ─── Layout system ─── */
+
+function Panel({
+  id,
+  children,
+  className,
+  variant = "default",
+}: {
+  id?: string;
+  children: React.ReactNode;
+  className?: string;
+  variant?: "default" | "accent";
+}) {
+  return (
+    <section
+      id={id}
+      className={cn(
+        "overflow-hidden rounded-2xl border border-border/80 bg-surface/50 backdrop-blur-sm",
+        variant === "accent" &&
+          "border-primary/25 bg-gradient-to-br from-primary/[0.06] via-surface/60 to-surface/50",
+        className,
+      )}
+    >
+      {children}
+    </section>
+  );
+}
+
+function FeedPhase({
+  id,
+  phase,
+  tone,
+  context,
+  total,
+  totalCaption,
+  children,
+  last,
+}: {
+  id: string;
+  phase: string;
+  tone: "loss" | "savings" | "neutral";
+  context: string;
+  total: string;
+  totalCaption: string;
+  children: React.ReactNode;
+  last?: boolean;
+}) {
+  const barAccent =
+    tone === "loss" ? "var(--tl-red)" : tone === "savings" ? "var(--primary)" : "var(--tl-blue)";
+  const totalClass =
+    tone === "loss" ? "text-[var(--tl-red)]" : tone === "savings" ? "text-primary" : "text-tl-blue";
+
+  return (
+    <div id={id} className={cn("scroll-mt-28", !last && "border-b border-border/60")}>
+      <div className="flex items-stretch gap-3 px-5 py-4 sm:gap-4 sm:px-6 sm:py-5">
+        <span className="w-0.5 shrink-0 rounded-full" style={{ background: barAccent }} />
+        <div className="flex min-w-0 flex-1 items-end justify-between gap-4">
+          <div className="min-w-0 pb-0.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">{phase}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{context}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className={cn("font-display text-3xl font-bold tabular-nums leading-none sm:text-4xl", totalClass)}>
+              {total}
+            </p>
+            <p className="mt-1 text-[10px] text-muted-foreground">{totalCaption}</p>
+          </div>
+        </div>
+      </div>
+      <div className="px-5 pb-4 pt-0 sm:px-6 sm:pb-5">{children}</div>
+    </div>
+  );
+}
+
+function SavingsFeedBridge() {
+  const feedSteps = [
+    {
+      beat: "Leak",
+      phase: "Yesterday",
+      href: "#savings-yesterday",
+      headline: "MoneyMap not activated",
+      body: "Before MoneyMap was watching, loyalty tax and quiet hikes stacked up across your bills. See what slipped through — and why activation stops it compounding.",
+      linkLabel: "View yesterday",
+    },
+    {
+      beat: "Recover",
+      phase: "Today",
+      href: "#savings-today",
+      headline: "What's on the table right now",
+      body: "Live scans match your usage to cheaper equivalents in our market database. Each alert below comes with a proposed switch you can queue in one tap — savings you can action before the next bill lands.",
+      linkLabel: "View today",
+    },
+    {
+      beat: "Protect",
+      phase: "Tomorrow",
+      href: "#savings-tomorrow",
+      headline: "What we're watching for you",
+      body: "Autopilot keeps scanning rates, plans, and renewals in the background. Items here aren't urgent yet — they're queued so the next move never catches you off guard.",
+      linkLabel: "View tomorrow",
+    },
+  ] as const;
+
+  return (
+    <div className="px-6 py-8 sm:px-8 sm:py-9">
+      <div className="grid gap-8 md:grid-cols-3 md:gap-6">
+        {feedSteps.map((item, index) => (
+          <div key={item.beat} className="relative">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="mr-2 font-display tabular-nums text-tl-blue/70">{index + 1}</span>
+              {item.beat} · {item.phase}
+            </p>
+            <h3 className="mt-3 font-display text-base font-semibold leading-snug sm:text-lg">{item.headline}</h3>
+            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+            <a
+              href={item.href}
+              className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-foreground/70 transition-colors hover:text-foreground"
+            >
+              {item.linkLabel}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HowItWorksSection() {
+  return (
+    <Panel id="how-it-works" className="scroll-mt-24">
+      <div className="p-6 sm:p-8 lg:p-10">
+        <p className="eyebrow-blue">How it works</p>
+        <h2 className="mt-3 max-w-2xl font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          From signup to savings in five steps
+        </h2>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Connect once through Australia&apos;s Open Banking framework — MoneyMap handles the rest on repeat.
+        </p>
+
+        <ol className="mt-10 space-y-0 lg:hidden">
+          {HOW_IT_WORKS_STEPS.map((step, index) => {
+            const Icon = step.icon;
+            const isLast = index === HOW_IT_WORKS_STEPS.length - 1;
+
+            return (
+              <li key={step.title} className="relative flex gap-4 sm:gap-5">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={cn(
+                      "relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-border/80 bg-background/60 sm:h-12 sm:w-12",
+                      isLast ? "border-primary/40 bg-primary/10" : "border-tl-blue/30 bg-tl-blue/10",
+                    )}
+                  >
+                    <Icon className={cn("h-5 w-5", isLast ? "text-primary" : "text-tl-blue")} />
+                    <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
+                      {index + 1}
+                    </span>
+                  </div>
+                  {!isLast ? (
+                    <span
+                      className="my-1 min-h-[2.5rem] w-px flex-1 bg-gradient-to-b from-tl-blue/40 to-border/30 sm:min-h-[3rem]"
+                      aria-hidden
+                    />
+                  ) : null}
+                </div>
+
+                <div className={cn("min-w-0 flex-1 pb-8", isLast && "pb-0")}>
+                  <h3
+                    className={cn(
+                      "font-display text-sm font-semibold leading-snug sm:text-base",
+                      isLast && "text-primary",
+                    )}
+                  >
+                    {step.title}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">{step.description}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+
+        <div className="mt-10 hidden lg:block">
+          <div className="relative">
+            <div
+              className="absolute left-[10%] right-[10%] top-6 h-px bg-gradient-to-r from-tl-blue/30 via-tl-blue/50 to-primary/50"
+              aria-hidden
+            />
+            <ol className="relative grid grid-cols-5 gap-4">
+              {HOW_IT_WORKS_STEPS.map((step, index) => {
+                const Icon = step.icon;
+                const isLast = index === HOW_IT_WORKS_STEPS.length - 1;
+
+                return (
+                  <li key={`wide-${step.title}`} className="flex flex-col items-center px-1 text-center">
+                    <div
+                      className={cn(
+                        "relative grid h-12 w-12 place-items-center rounded-xl border border-border/80 bg-background/60",
+                        isLast
+                          ? "border-primary/40 bg-primary/10 shadow-[0_0_20px_color-mix(in_oklab,var(--primary)_15%,transparent)]"
+                          : "border-tl-blue/30 bg-tl-blue/10",
+                      )}
+                    >
+                      <Icon className={cn("h-5 w-5", isLast ? "text-primary" : "text-tl-blue")} />
+                      <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
+                        {index + 1}
+                      </span>
+                    </div>
+                    <h3
+                      className={cn(
+                        "mt-4 font-display text-xs font-semibold leading-snug",
+                        isLast && "text-primary",
+                      )}
+                    >
+                      {step.title}
+                    </h3>
+                    <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{step.description}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+function FeedDetailBreak() {
+  return (
+    <div className="border-y border-border/60 bg-black/15 px-6 py-8 sm:px-8 sm:py-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+        <div className="max-w-md">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-tl-blue">Itemised feed</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Below is your account in detail — starting with last year, while MoneyMap wasn&apos;t active.
+          </p>
+        </div>
+        <div className="hidden shrink-0 sm:block sm:h-px sm:w-16 sm:bg-border/80" aria-hidden />
+        <p className="text-xs text-muted-foreground/80 sm:max-w-[11rem] sm:text-right sm:leading-relaxed">
+          Scroll the three phases or jump from the overview above.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Feed content blocks ─── */
+
+function DetailPanel({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("overflow-hidden rounded-lg border border-border/60 bg-background/25", className)}>
+      {children}
+    </div>
+  );
+}
+
+function DetailRow({
+  label,
+  amount,
+  icon: Icon,
+  className,
+}: {
+  label: string;
+  amount: string;
+  icon?: LucideIcon;
+  className?: string;
+}) {
+  return (
+    <li
+      className={cn(
+        "flex items-center justify-between gap-2 border-b border-border/30 px-3 py-2 text-xs last:border-0 sm:gap-3 sm:px-3.5",
+        className,
+      )}
+    >
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-2.5">
+        {Icon ? <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" /> : null}
+        <span className="min-w-0 truncate text-muted-foreground">{label}</span>
+      </div>
+      <span className="shrink-0 tabular-nums text-foreground/75">{amount}</span>
+    </li>
+  );
+}
+
+function YesterdayLossContent() {
+  return (
+    <DetailPanel>
+      <ul>
+        {YESTERDAY_LEAKS.map((item) => (
+          <DetailRow
+            key={item.label}
+            icon={item.icon}
+            label={item.label}
+            amount={`−${fmtAud(item.amount)}`}
+          />
+        ))}
+      </ul>
+      <div className="border-t border-border/40 bg-black/10 px-3 py-2.5 sm:px-3.5">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          <span className="font-medium text-[var(--tl-red)]">Action required</span>
+          {" · "}Activate to stop this compounding
+        </p>
+      </div>
+    </DetailPanel>
+  );
+}
+
+function RecoverTodayContent({
+  actions,
+  onActivate,
+}: {
+  actions: TodayAction[];
+  onActivate: () => void;
+}) {
+  return (
+    <DetailPanel>
+      <ul>
+        {actions.map((action, i) => {
+          const Icon = action.icon;
+
+          return (
+            <li
+              key={action.id}
+              className="group animate-fade-in border-b border-border/30 last:border-0"
+              style={{ animationDelay: `${i * 30}ms`, animationFillMode: "backwards" }}
+            >
+              <div className="flex items-center gap-2 px-3 py-2 sm:gap-3 sm:px-3.5">
+                <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs text-muted-foreground">
+                    <span className="text-foreground/80">{action.category}</span>
+                    <span className="text-muted-foreground/50"> · </span>
+                    {action.title}
+                  </p>
+                </div>
+                <span className="shrink-0 text-xs font-semibold tabular-nums text-primary">{action.saveLabel}</span>
               </div>
-              <div>
-                <Label htmlFor="ln">Last name</Label>
-                <Input id="ln" defaultValue="Nguyen" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="addr">Address</Label>
-              <Input id="addr" defaultValue="14 Smith St, Brighton East VIC 3187" />
-            </div>
-            <div>
-              <Label htmlFor="nmi">NMI (meter number)</Label>
-              <Input id="nmi" defaultValue="6 1023 4567 89" />
-            </div>
-            <div>
-              <Label htmlFor="em">Email</Label>
-              <Input id="em" type="email" defaultValue="sam.n@example.com" />
-            </div>
-            <Button type="submit" disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting…</> : "Confirm switch"}
-            </Button>
-          </form>
-        )}
-      </DialogContent>
-    </Dialog>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="flex flex-col gap-3 border-t border-border/40 bg-black/10 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-3.5">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          <span className="font-medium text-primary">Ready to recover</span>
+          {" · "}Activate to action these switches
+        </p>
+        <Button
+          onClick={onActivate}
+          size="sm"
+          className="h-8 shrink-0 bg-primary text-xs font-semibold text-primary-foreground hover:bg-primary/90 glow-green group"
+        >
+          Activate MoneyMap
+          <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </Button>
+      </div>
+    </DetailPanel>
+  );
+}
+
+function AutopilotWatchContent({ items }: { items: WatchItem[] }) {
+  return (
+    <DetailPanel>
+      <ul>
+        {items.map((item) => (
+          <DetailRow
+            key={item.id}
+            icon={item.icon}
+            label={`${item.category} · ${item.title}`}
+            amount={item.saveLabel}
+          />
+        ))}
+      </ul>
+      <p className="border-t border-border/30 px-3 py-2 text-[10px] leading-relaxed text-muted-foreground sm:px-3.5">
+        <Shield className="mr-1 inline h-3 w-3 -translate-y-px text-tl-blue" />
+        24/7 monitoring — alerted only when switching is worth it
+      </p>
+    </DetailPanel>
   );
 }

@@ -6,8 +6,8 @@ import {
   CheckCircle2,
   Check,
   Tv,
-  FolderHeart,
-  Home as HomeIcon,
+  Smartphone,
+  Wifi,
   Sparkles,
   ArrowRight,
   TrendingUp,
@@ -53,11 +53,11 @@ function PricingPage() {
     <main>
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[600px] bg-[radial-gradient(60%_60%_at_50%_0%,rgba(0,230,118,0.10),transparent_60%),radial-gradient(40%_50%_at_80%_20%,rgba(0,229,255,0.08),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[600px] page-hero-glow" />
         <div className="mx-auto max-w-5xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pt-24 lg:px-8">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5" style={{ color: "var(--tl-green)" }} />
-            The Fiduciary Proposition
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            Simple, honest pricing
           </div>
           <h1
             className="font-display text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.25rem]"
@@ -77,9 +77,9 @@ function PricingPage() {
 
           {/* Trust badges */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <TrustBadge icon={<ShieldCheck className="h-4 w-4" />} label="100% Conflict-Free Fiduciary Model" />
-            <TrustBadge icon={<Zap className="h-4 w-4" />} label="Continuous Rate Guard Protection" />
-            <TrustBadge icon={<CheckCircle2 className="h-4 w-4" />} label="Cancel Anytime, Keep Your Savings" />
+            <TrustBadge icon={<ShieldCheck className="h-4 w-4" />} label="100% on your side — no supplier commissions" />
+            <TrustBadge icon={<Zap className="h-4 w-4" />} label="Continuous rate guard protection" />
+            <TrustBadge icon={<CheckCircle2 className="h-4 w-4" />} label="Cancel anytime, keep your savings" />
           </div>
         </div>
       </section>
@@ -92,7 +92,7 @@ function PricingPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               MoneyMap Core
             </p>
-            <h2 className="mt-1 font-display text-xl font-bold">The Auto-Saver Engine</h2>
+            <h2 className="mt-1 font-display text-xl font-bold">Bill Savings Scanner</h2>
 
             <div className="mt-6">
               <p className="font-display text-5xl font-bold tracking-tight">$0 Upfront</p>
@@ -110,11 +110,11 @@ function PricingPage() {
 
             <ul className="mt-6 space-y-3 text-sm">
               {[
-                "Open Banking Instant Live Account Sync",
-                "Continuous 24/7 AI Bill & Price Hike Scanner",
-                "Single-Click Frictionless Provider Switching (30-Sec Forms)",
-                "5-Colour Traffic Light Visual Cashflow View (Blue, Green, Yellow, Orange, Red)",
-                "Active shield monitoring against quiet supplier rate hikes",
+                "Open Banking connect — read-only bill & account sync",
+                "Continuous 24/7 scan across your household bills",
+                "Bill Savings Alerts when a cheaper plan matches your usage",
+                "Leak · Recover · Protect savings feed overview",
+                "Active monitoring for quiet supplier rate hikes",
               ].map((f) => (
                 <FeatureRow key={f}>{f}</FeatureRow>
               ))}
@@ -150,7 +150,7 @@ function PricingPage() {
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--tl-blue)" }}>
               MoneyMap Premium
             </p>
-            <h2 className="mt-1 font-display text-xl font-bold">The Automated Wealth Accelerator</h2>
+            <h2 className="mt-1 font-display text-xl font-bold">Bill Savings Autopilot</h2>
 
             <div className="mt-6">
               <p className="font-display text-5xl font-bold tracking-tight">
@@ -169,13 +169,12 @@ function PricingPage() {
 
             <ul className="mt-6 space-y-3 text-sm">
               {[
-                "Includes all features in Core Auto-Saver plan",
-                "The 12-Month Crystal Ball predictive interactive slider",
-                "Essentials vs. Fun Spend deep simplicity toggle",
-                "Am I On Track? Peer matching benchmark engine",
-                "Automated Real-Time Credit Score Tracking API",
-                "Live Auto & Property Value Tracker APIs",
-                "The Stress-Free Mortgage Credit Passport Builder",
+                "Includes everything in MoneyMap Core",
+                "Full itemised savings feed — yesterday's leaks, today's recoveries, tomorrow on watch",
+                "Priority alerts for energy, mobile, NBN, utilities, insurance & subscriptions",
+                "Recoverable savings surfaced with one-tap switch actions",
+                "Autopilot watch queue for renewals, repricing & seasonal tariffs",
+                "Loyalty tax analysis — see what you missed before MoneyMap was active",
               ].map((f) => (
                 <FeatureRow key={f}>{f}</FeatureRow>
               ))}
@@ -188,7 +187,7 @@ function PricingPage() {
                 variant="outline"
                 className="h-12 w-full border-primary/40 bg-background/40 px-6 text-base font-semibold text-foreground backdrop-blur hover:bg-primary/10 hover:text-foreground"
               >
-                Unlock My 12-Month Crystal Ball <ArrowRight className="ml-1 h-4 w-4" />
+                Upgrade to Premium Bill Alerts <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
           </Card>
@@ -205,7 +204,7 @@ function PricingPage() {
       <section className="border-t border-border">
         <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">Loyalty & Conflict-Free</p>
+            <p className="eyebrow-blue">Loyalty & Conflict-Free</p>
             <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Straight answers, no fine print</h2>
           </div>
 
@@ -213,17 +212,17 @@ function PricingPage() {
             <FaqItem
               value="q1"
               q="What stops me from taking your AI's advice and switching manually offline?"
-              a="Nothing at all! However, executing the switch inside MoneyMap takes under 30 seconds using your verified Open Banking profile—completely skipping paperwork, brokers, and phone queues. More importantly, using our single-click switch activates the Continuous Rate Guard. If that provider quietly jacks up your rates in 90 days, our 5-colour dashboard alerts you instantly and queues up the next optimal shift. If you leave the app, you turn off your automated financial shield."
+              a="Nothing at all! However, executing the switch inside MoneyMap takes under 30 seconds using your verified Open Banking profile—completely skipping paperwork and call centres. More importantly, staying on MoneyMap keeps your bill savings feed active. If a provider quietly jacks up your rates in 90 days, we flag it in your feed and queue the next best switch. If you leave the app, you turn off that automated bill watch."
             />
             <FaqItem
               value="q2"
               q="How does the $500 Net-Positive Guarantee work?"
-              a="It is hardcoded into our billing system. When you securely link your accounts, our AI cross-references your bills against all live Australian market baselines. If the total combined savings discovered across your mortgage, super, insurance, and utilities do not exceed $500, your subscription fee is automatically waived. You will never be out of pocket."
+              a="It is hardcoded into our billing system. When you securely link your accounts, we cross-reference your bills against live Australian market baselines. If the total combined savings discovered across energy, mobile, NBN, insurance, utilities, and subscriptions do not exceed $500, your subscription fee is automatically waived. You will never be out of pocket."
             />
             <FaqItem
               value="q3"
-              q="Can I really pay for the Premium Wealth Hub using my savings?"
-              a="Yes. When our AI engine trims money off your essential expenses (like saving you $340 on your energy bill), those real-time savings accumulate in your dashboard balance. By toggling on the 'Native Subsidy' feature, a tiny portion of those discovered savings covers your $4.99/mo Premium membership automatically, leaving your personal credit card completely untouched."
+              q="Can I really pay for Premium using my bill savings?"
+              a="Yes. When we find money off your bills (like saving you $340 on energy or $60/mo on mobile), those verified savings show up in your feed. By toggling on the Native Subsidy feature, a portion of those discovered savings covers your $4.99/mo Premium membership automatically, leaving your personal credit card untouched."
             />
           </Accordion>
         </div>
@@ -256,7 +255,7 @@ function PricingPage() {
 function TrustBadge({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1.5 text-xs text-muted-foreground">
-      <span className="text-primary">{icon}</span>
+      <span className="text-muted-foreground/80">{icon}</span>
       {label}
     </div>
   );
@@ -292,12 +291,13 @@ function FaqItem({ value, q, a }: { value: string; q: string; a: string }) {
 function ValueCalculator() {
   const [bills, setBills] = useState(800);
 
-  const { mortgage, utilities, superFees, subs, total } = useMemo(() => {
-    const mortgage = Math.round(bills * 1.5);
-    const utilities = Math.round(bills * 0.35);
-    const superFees = 220;
+  const { energy, mobile, nbn, insurance, subs, total } = useMemo(() => {
+    const energy = Math.round(bills * 0.42);
+    const mobile = Math.round(bills * 0.36);
+    const nbn = Math.round(bills * 0.18);
+    const insurance = Math.round(bills * 0.28);
     const subs = 95;
-    return { mortgage, utilities, superFees, subs, total: mortgage + utilities + superFees + subs };
+    return { energy, mobile, nbn, insurance, subs, total: energy + mobile + nbn + insurance + subs };
   }, [bills]);
 
   const fmt = (n: number) => `$${n.toLocaleString("en-AU")}`;
@@ -320,8 +320,8 @@ function ValueCalculator() {
 
         <div className="mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-10">
           <label className="block text-sm font-medium text-muted-foreground">
-            Select your estimated monthly household bills (Mortgage, Electricity, Insurance, Internet,
-            Streaming):
+            Select your estimated monthly household bills (energy, mobile, NBN, insurance,
+            subscriptions):
           </label>
           <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
             <span>$200</span>
@@ -337,30 +337,36 @@ function ValueCalculator() {
             className="mt-3"
           />
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <CalcBlock
-              icon={<HomeIcon className="h-5 w-5" />}
-              tone="var(--tl-green)"
-              title="Home Loan Rate Audit"
-              line={`Projected Mortgage Win: ${fmt(mortgage)} / yr average baseline`}
-            />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <CalcBlock
               icon={<Zap className="h-5 w-5" />}
-              tone="var(--tl-blue)"
-              title="Utilities & Connectivity"
-              line={`Electricity & Broadband Check: ${fmt(utilities)} / yr average saved`}
+              tone="var(--tl-green)"
+              title="Energy loyalty tax"
+              line={`Rate hike & retailer switch: ${fmt(energy)} / yr average baseline`}
             />
             <CalcBlock
-              icon={<FolderHeart className="h-5 w-5" />}
+              icon={<Smartphone className="h-5 w-5" />}
+              tone="var(--tl-blue)"
+              title="Mobile overpay"
+              line={`Plan match for your usage: ${fmt(mobile)} / yr average saved`}
+            />
+            <CalcBlock
+              icon={<Wifi className="h-5 w-5" />}
               tone="var(--tl-yellow)"
-              title="Superannuation Fees"
-              line={`Lost Super & Fee Cleanup: ${fmt(superFees)} / yr flat baseline`}
+              title="NBN plan drift"
+              line={`Faster plan, lower price: ${fmt(nbn)} / yr average saved`}
+            />
+            <CalcBlock
+              icon={<ShieldCheck className="h-5 w-5" />}
+              tone="var(--tl-orange)"
+              title="Insurance & utilities"
+              line={`Renewal & tariff check: ${fmt(insurance)} / yr average saved`}
             />
             <CalcBlock
               icon={<Tv className="h-5 w-5" />}
-              tone="var(--tl-orange)"
-              title="Wasted Subscriptions"
-              line={`Dormant Trials & Duplicate Streams: ${fmt(subs)} / yr flat baseline`}
+              tone="var(--tl-red)"
+              title="Unused subscriptions"
+              line={`Dormant trials & duplicate streams: ${fmt(subs)} / yr flat baseline`}
             />
           </div>
 
@@ -454,16 +460,13 @@ function SavingsMission() {
   const annual = perAccount * customers; // $532,000 / yr
   const threeYear = perAccount * 3 * customers; // $1,596,000
 
-  // Trajectory: quarterly, current → end-2026 ($1B goal) → end-2027 ($3B stretch)
-  // Q3 2026 is "now". Mark current at ~$0.5M cumulative collective savings.
+  // Trajectory in $m — Q3 2026 is "now", $20m goal at EOY 2026
   const points = [
-    { label: "Q3 '26", value: 0.0005, current: true }, // $0.5M ≈ today
-    { label: "Q4 '26", value: 0.18 },
-    { label: "Q1 '27", value: 0.42 },
-    { label: "Q2 '27", value: 0.68 },
-    { label: "Q3 '27", value: 1.0, goal: true }, // $1B mission
-    { label: "Q4 '27", value: 1.55 },
-    { label: "EOY '27", value: 2.2 },
+    { label: "Q1 '26", value: 0.5 },
+    { label: "Q2 '26", value: 3 },
+    { label: "Q3 '26", value: 6, current: true },
+    { label: "Q4 '26", value: 12 },
+    { label: "EOY '26", value: 20, goal: true },
   ];
 
   const W = 800;
@@ -472,7 +475,7 @@ function SavingsMission() {
   const PAD_R = 20;
   const PAD_T = 20;
   const PAD_B = 36;
-  const maxV = 2.4; // in $B
+  const maxV = 22; // in $M
   const xStep = (W - PAD_L - PAD_R) / (points.length - 1);
   const yFor = (v: number) => PAD_T + (H - PAD_T - PAD_B) * (1 - v / maxV);
   const xFor = (i: number) => PAD_L + i * xStep;
@@ -506,39 +509,17 @@ function SavingsMission() {
           </div>
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
             Saving Australia{" "}
-            <span style={{ color: "var(--tl-green)" }}>$1 Billion</span> by end of 2026
+            <span style={{ color: "var(--tl-green)" }}>$20m</span> by end of 2026
           </h2>
+          <p className="mt-3 text-base font-medium text-foreground">
+            Join us in beating the credit crisis.
+          </p>
           <p className="mt-3 text-muted-foreground">
             For our first <span className="font-semibold text-foreground">1,000 customers</span> we
             uncovered an average of{" "}
             <span className="font-semibold text-foreground">$532 per account</span>. Multiply that
             across every Aussie household and the collective opportunity is enormous.
           </p>
-        </div>
-
-        {/* Headline stats */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          <StatCard
-            icon={<Users className="h-5 w-5" />}
-            tone="var(--tl-blue)"
-            label="First 1,000 customers"
-            value={fmtAUD(perAccountCount)}
-            sub="avg. verified saving per account"
-          />
-          <StatCard
-            icon={<TrendingUp className="h-5 w-5" />}
-            tone="var(--tl-green)"
-            label="Collective savings / 12 mo"
-            value={fmtAUD(annualCount)}
-            sub="across our founding cohort"
-          />
-          <StatCard
-            icon={<Target className="h-5 w-5" />}
-            tone="var(--tl-yellow)"
-            label="Compounded over 3 years"
-            value={fmtAUD(threeYearCount)}
-            sub="$1,596 saved per household"
-          />
         </div>
 
         {/* Animated chart */}
@@ -548,9 +529,6 @@ function SavingsMission() {
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Collective Savings Trajectory
               </p>
-              <h3 className="mt-1 font-display text-xl font-bold">
-                From founding cohort to $1B mission — and beyond
-              </h3>
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
@@ -559,11 +537,7 @@ function SavingsMission() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-green)" }} />
-                $1B Goal (EOY 2026)
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-yellow)" }} />
-                2027 Trajectory
+                $20m goal (EOY 2026)
               </span>
             </div>
           </div>
@@ -589,7 +563,7 @@ function SavingsMission() {
               </defs>
 
               {/* gridlines */}
-              {[0, 0.5, 1, 1.5, 2].map((g) => (
+              {[0, 5, 10, 15, 20].map((g) => (
                 <g key={g}>
                   <line
                     x1={PAD_L}
@@ -608,17 +582,17 @@ function SavingsMission() {
                     className="fill-muted-foreground"
                     style={{ fontSize: 10 }}
                   >
-                    ${g === 0 ? "0" : `${g}B`}
+                    ${g === 0 ? "0" : `${g}m`}
                   </text>
                 </g>
               ))}
 
-              {/* $1B goal marker */}
+              {/* $20m goal marker */}
               <line
                 x1={PAD_L}
                 x2={W - PAD_R}
-                y1={yFor(1)}
-                y2={yFor(1)}
+                y1={yFor(20)}
+                y2={yFor(20)}
                 stroke="var(--tl-green)"
                 strokeOpacity="0.5"
                 strokeWidth={1.2}
@@ -685,7 +659,7 @@ function SavingsMission() {
                         className="fill-foreground"
                         style={{ fontSize: 11, fontWeight: 700 }}
                       >
-                        $1B Mission
+                        $20m mission
                       </text>
                     )}
                     {p.current && (
@@ -696,7 +670,7 @@ function SavingsMission() {
                         className="fill-foreground"
                         style={{ fontSize: 11, fontWeight: 700 }}
                       >
-                        You are here
+                        we are here
                       </text>
                     )}
                     <text
@@ -714,10 +688,28 @@ function SavingsMission() {
             </svg>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <MissionStat label="Today" value="$0.5M" tone="var(--tl-blue)" hint="founding cohort to date" />
-            <MissionStat label="End of 2026" value="$1B" tone="var(--tl-green)" hint="our public commitment" />
-            <MissionStat label="End of 2027" value="$2.2B" tone="var(--tl-yellow)" hint="projected trajectory" />
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <StatCard
+              icon={<Users className="h-5 w-5" />}
+              tone="var(--tl-blue)"
+              label="First 1,000 customers"
+              value={fmtAUD(perAccountCount)}
+              sub="avg. verified saving per account"
+            />
+            <StatCard
+              icon={<TrendingUp className="h-5 w-5" />}
+              tone="var(--tl-green)"
+              label="Collective savings / 12 mo"
+              value={fmtAUD(annualCount)}
+              sub="across our founding cohort"
+            />
+            <StatCard
+              icon={<Target className="h-5 w-5" />}
+              tone="var(--tl-yellow)"
+              label="Compounded over 3 years"
+              value={fmtAUD(threeYearCount)}
+              sub="$1,596 saved per household"
+            />
           </div>
         </div>
 
@@ -765,28 +757,6 @@ function StatCard({
         {value}
       </p>
       <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
-    </div>
-  );
-}
-
-function MissionStat({
-  label,
-  value,
-  tone,
-  hint,
-}: {
-  label: string;
-  value: string;
-  tone: string;
-  hint: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-background/40 p-4">
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-2xl font-bold" style={{ color: tone }}>
-        {value}
-      </p>
-      <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
     </div>
   );
 }

@@ -4,11 +4,16 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkAccountsDialog } from "./link-accounts-dialog";
 
-const tabs = [
+const navItems = [
+  { to: "/", label: "Home", exact: true },
+  { to: "/alerts", label: "Savings Alerts" },
   { to: "/pricing", label: "Pricing" },
-  { to: "/dashboard", label: "My Dashboard" },
-  { to: "/alerts", label: "Bill & Price Hike Alerts", badge: 2 },
 ] as const;
+
+function isNavActive(pathname: string, to: string, exact?: boolean) {
+  if (exact) return pathname === to;
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
 
 function Logo() {
   return (
@@ -24,7 +29,7 @@ function Logo() {
         />
       </span>
       <span className="font-display text-lg font-bold tracking-tight text-foreground">
-        Money<span className="text-foreground">Map</span>
+        Money<span className="text-tl-blue">Map</span>
       </span>
     </Link>
   );
@@ -40,28 +45,19 @@ export function SiteNav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {tabs.map((t) => {
-            const active = pathname === t.to;
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+          {navItems.map((item) => {
+            const active = isNavActive(pathname, item.to, "exact" in item && item.exact);
             return (
               <Link
-                key={t.to}
-                to={t.to}
+                key={item.to}
+                to={item.to}
+                aria-current={active ? "page" : undefined}
                 className={`relative rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                  active ? "text-tl-blue" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <span className="inline-flex items-center gap-2">
-                  {t.label}
-                  {"badge" in t && t.badge ? (
-                    <span
-                      className="pulse-dot grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] font-bold text-background"
-                      style={{ backgroundColor: "var(--tl-red)", color: "#fff" }}
-                    >
-                      {t.badge}
-                    </span>
-                  ) : null}
-                </span>
+                {item.label}
               </Link>
             );
           })}
@@ -86,25 +82,25 @@ export function SiteNav() {
 
       {open && (
         <div className="border-t border-border lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-4 py-2 sm:px-6">
-            {tabs.map((t) => (
-              <Link
-                key={t.to}
-                to={t.to}
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-md px-3 py-3 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <span>{t.label}</span>
-                {"badge" in t && t.badge ? (
-                  <span
-                    className="grid h-5 min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold text-white"
-                    style={{ backgroundColor: "var(--tl-red)" }}
-                  >
-                    {t.badge}
-                  </span>
-                ) : null}
-              </Link>
-            ))}
+          <nav className="mx-auto flex max-w-7xl flex-col px-4 py-2 sm:px-6" aria-label="Main">
+            {navItems.map((item) => {
+              const active = isNavActive(pathname, item.to, "exact" in item && item.exact);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-md px-3 py-3 text-sm transition-colors ${
+                    active
+                      ? "bg-secondary font-medium text-tl-blue"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <Button onClick={() => { setOpen(false); setLinkOpen(true); }} className="mt-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
               Stop Overpaying Instantly
             </Button>

@@ -120,8 +120,38 @@
   box-shadow: 0 0 0 1px rgba(0,229,255,0.30), 0 14px 50px -12px rgba(0,229,255,0.40);
 }
 
+@utility page-hero-glow {
+  background:
+    radial-gradient(60% 60% at 50% 0%, color-mix(in oklab, var(--tl-green) 10%, transparent), transparent 60%),
+    radial-gradient(40% 50% at 80% 20%, color-mix(in oklab, var(--tl-blue) 8%, transparent), transparent 70%);
+}
+
+@utility badge-blue {
+  border: 1px solid color-mix(in oklab, var(--tl-blue) 35%, transparent);
+  background: color-mix(in oklab, var(--tl-blue) 8%, transparent);
+  color: var(--tl-blue);
+}
+
+@utility eyebrow-blue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tl-blue);
+}
+
 @utility glow-yellow {
   box-shadow: 0 0 0 1px rgba(255,214,0,0.30), 0 14px 50px -12px rgba(255,214,0,0.35);
+}
+
+@keyframes hero-stat-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 @utility pulse-dot {
