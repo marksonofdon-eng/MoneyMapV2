@@ -33,18 +33,21 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-20 pt-16 sm:gap-10 sm:px-6 sm:pt-24 lg:grid lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-28 xl:grid-cols-[0.9fr_1.1fr] xl:gap-16">
           {/* Headline + explanation */}
           <div className="order-1 lg:col-start-1 lg:row-start-1">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
-              <Radar className="h-3.5 w-3.5 text-primary" />
-              Find savings · stay on watch
-            </div>
-            <h1 className="font-display text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-[3.5rem]"
-                style={{ backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <h1
+              className="font-display overflow-visible pb-1 text-[2.2rem] font-bold leading-[1.18] tracking-tight sm:pb-1.5 sm:text-5xl sm:leading-[1.14] lg:text-[3.5rem] lg:leading-[1.1]"
+              style={{
+                backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                paddingBottom: "0.12em",
+              }}
+            >
               Beat the cost of living crisis.
             </h1>
-            <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              MoneyMap will scan your bills to find missed savings TODAY. Sign up for continuous monthly monitoring to keep
-              your hard-earned cash in your pocket. The moment your rates hike or a cheaper deal drops, you get alerted
-              instantly.
+            <p className="mt-7 max-w-xl text-base text-muted-foreground sm:mt-8 sm:text-lg">
+              MoneyMap scans your bills to find missed savings TODAY. Sign up for continuous monthly monitoring. If bills
+              increase or we find a better deal, you get alerted instantly.
             </p>
           </div>
 
