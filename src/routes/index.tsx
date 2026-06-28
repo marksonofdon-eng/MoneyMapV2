@@ -283,7 +283,7 @@ function ProgressArc() {
       <div className="glass-card rounded-3xl p-6 sm:p-8" style={{ boxShadow: `0 30px 80px -30px ${tone.c}55` }}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Status</p>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Financial Status</p>
             <p className="mt-1 font-display text-xl font-bold" style={{ color: tone.c }}>{tone.label}</p>
           </div>
           <div className="flex items-center gap-1.5">
