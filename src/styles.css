@@ -12,6 +12,7 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -32,44 +33,61 @@
   --color-ring-offset-background: var(--background);
   --color-success: var(--success);
   --color-warning: var(--warning);
+
+  /* Traffic light tokens */
+  --color-tl-blue: var(--tl-blue);
+  --color-tl-green: var(--tl-green);
+  --color-tl-yellow: var(--tl-yellow);
+  --color-tl-orange: var(--tl-orange);
+  --color-tl-red: var(--tl-red);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", "SF Pro Display", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --radius: 0.875rem;
-  /* MoneyHub Dark Theme */
-  --background: oklch(0.18 0 0);              /* #121212 */
-  --foreground: oklch(0.96 0.005 270);        /* #F5F5F7 */
-  --card: oklch(0.22 0.005 270);              /* slightly lifted surface */
-  --card-foreground: oklch(0.96 0.005 270);
-  --popover: oklch(0.22 0.005 270);
-  --popover-foreground: oklch(0.96 0.005 270);
-  --primary: oklch(0.82 0.22 145);            /* #00E676 green */
-  --primary-foreground: oklch(0.16 0 0);
-  --secondary: oklch(0.26 0.005 270);
-  --secondary-foreground: oklch(0.96 0.005 270);
-  --muted: oklch(0.24 0.005 270);
-  --muted-foreground: oklch(0.68 0.01 270);
-  --accent: oklch(0.82 0.22 145);
-  --accent-foreground: oklch(0.16 0 0);
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --success: oklch(0.82 0.22 145);
-  --warning: oklch(0.78 0.18 70);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.82 0.22 145 / 60%);
-  --chart-1: oklch(0.82 0.22 145);
-  --chart-2: oklch(0.72 0.15 200);
-  --chart-3: oklch(0.78 0.18 70);
-  --chart-4: oklch(0.68 0.2 300);
-  --chart-5: oklch(0.7 0.18 25);
+  /* MoneyMap Premium Midnight */
+  --background: #0E0F12;
+  --surface: #16171C;
+  --foreground: #F5F5F7;
+  --card: #16171C;
+  --card-foreground: #F5F5F7;
+  --popover: #16171C;
+  --popover-foreground: #F5F5F7;
+  --primary: #00E676;
+  --primary-foreground: #0E0F12;
+  --secondary: #1F2127;
+  --secondary-foreground: #F5F5F7;
+  --muted: #1B1D22;
+  --muted-foreground: #8E8E93;
+  --accent: #00E676;
+  --accent-foreground: #0E0F12;
+  --destructive: #FF1744;
+  --destructive-foreground: #ffffff;
+  --success: #00E676;
+  --warning: #FFD600;
+  --border: rgba(255,255,255,0.06);
+  --input: rgba(255,255,255,0.10);
+  --ring: rgba(0,230,118,0.5);
+
+  /* 5-Colour Traffic Light Engine */
+  --tl-blue: #00E5FF;
+  --tl-green: #00E676;
+  --tl-yellow: #FFD600;
+  --tl-orange: #FF9100;
+  --tl-red: #FF1744;
+
+  --chart-1: #00E676;
+  --chart-2: #00E5FF;
+  --chart-3: #FFD600;
+  --chart-4: #FF9100;
+  --chart-5: #FF1744;
 }
 
 @layer base {
@@ -89,11 +107,39 @@
 }
 
 @utility glass-card {
-  background: linear-gradient(180deg, oklch(1 0 0 / 4%), oklch(1 0 0 / 2%));
-  border: 1px solid oklch(1 0 0 / 8%);
-  backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
 }
 
 @utility glow-green {
-  box-shadow: 0 0 0 1px oklch(0.82 0.22 145 / 30%), 0 12px 40px -10px oklch(0.82 0.22 145 / 30%);
+  box-shadow: 0 0 0 1px rgba(0,230,118,0.35), 0 14px 50px -12px rgba(0,230,118,0.45);
+}
+
+@utility glow-blue {
+  box-shadow: 0 0 0 1px rgba(0,229,255,0.30), 0 14px 50px -12px rgba(0,229,255,0.40);
+}
+
+@utility glow-yellow {
+  box-shadow: 0 0 0 1px rgba(255,214,0,0.30), 0 14px 50px -12px rgba(255,214,0,0.35);
+}
+
+@utility pulse-dot {
+  position: relative;
+}
+@utility pulse-dot {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    box-shadow: 0 0 0 0 currentColor;
+    animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 currentColor; opacity: 0.7; }
+  70% { box-shadow: 0 0 0 10px transparent; opacity: 0; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
 }
