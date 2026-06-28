@@ -108,17 +108,17 @@ const HERO_MONITORING_POINTS = [
   {
     icon: Search,
     title: "Find savings",
-    body: "Instantly see bills you're overpaying right now.",
-  },
-  {
-    icon: Bell,
-    title: "Get alerted",
-    body: "We notify you when switching is genuinely worth it",
+    body: "Identify immediate bill savings today",
   },
   {
     icon: Radar,
     title: "Stay Protected",
-    body: "We keep monitoring for hidden bill price hikes.",
+    body: "We monitor for hidden bill price hikes.",
+  },
+  {
+    icon: Bell,
+    title: "Get Alerted",
+    body: "We send you real savings, zero hassle.",
   },
 ] as const;
 
@@ -126,7 +126,7 @@ function HeroMonitoringPoints({ className }: { className?: string }) {
   return (
     <div className={className}>
       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-        We monitor for savings — month after month after month
+        We monitor for savings. Month after month after month.
       </p>
       <ul className="grid gap-2.5 sm:grid-cols-3 sm:gap-3">
         {HERO_MONITORING_POINTS.map((point) => {
