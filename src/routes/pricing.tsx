@@ -406,3 +406,387 @@ function CalcBlock({
     </div>
   );
 }
+
+/* --- Collective Savings Mission --- */
+
+function useCountUp(target: number, durationMs = 1800, start = false) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!start) return;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - t0) / durationMs);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(target * eased);
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [target, durationMs, start]);
+  return value;
+}
+
+function SavingsMission() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, []);
+
+  // Core economics
+  const perAccount = 532;
+  const customers = 1000;
+  const annual = perAccount * customers; // $532,000 / yr
+  const threeYear = perAccount * 3 * customers; // $1,596,000
+
+  // Trajectory: quarterly, current → end-2026 ($1B goal) → end-2027 ($3B stretch)
+  // Q3 2026 is "now". Mark current at ~$0.5M cumulative collective savings.
+  const points = [
+    { label: "Q3 '26", value: 0.0005, current: true }, // $0.5M ≈ today
+    { label: "Q4 '26", value: 0.18 },
+    { label: "Q1 '27", value: 0.42 },
+    { label: "Q2 '27", value: 0.68 },
+    { label: "Q3 '27", value: 1.0, goal: true }, // $1B mission
+    { label: "Q4 '27", value: 1.55 },
+    { label: "EOY '27", value: 2.2 },
+  ];
+
+  const W = 800;
+  const H = 280;
+  const PAD_L = 40;
+  const PAD_R = 20;
+  const PAD_T = 20;
+  const PAD_B = 36;
+  const maxV = 2.4; // in $B
+  const xStep = (W - PAD_L - PAD_R) / (points.length - 1);
+  const yFor = (v: number) => PAD_T + (H - PAD_T - PAD_B) * (1 - v / maxV);
+  const xFor = (i: number) => PAD_L + i * xStep;
+
+  const linePath = points
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${xFor(i)} ${yFor(p.value)}`)
+    .join(" ");
+  const areaPath = `${linePath} L ${xFor(points.length - 1)} ${H - PAD_B} L ${xFor(0)} ${H - PAD_B} Z`;
+
+  const annualCount = useCountUp(annual, 1800, visible);
+  const threeYearCount = useCountUp(threeYear, 2200, visible);
+  const perAccountCount = useCountUp(perAccount, 1400, visible);
+
+  const fmtAUD = (n: number) =>
+    `$${Math.round(n).toLocaleString("en-AU")}`;
+
+  return (
+    <section className="relative overflow-hidden border-t border-border bg-background">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--tl-green) 14%, transparent), transparent 70%), radial-gradient(40% 40% at 90% 100%, color-mix(in oklab, var(--tl-blue) 12%, transparent), transparent 70%)",
+        }}
+      />
+      <div ref={ref} className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
+            <Flag className="h-3.5 w-3.5" style={{ color: "var(--tl-green)" }} />
+            The 2026 Mission
+          </div>
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">
+            Saving Australia{" "}
+            <span style={{ color: "var(--tl-green)" }}>$1 Billion</span> by end of 2026
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            For our first <span className="font-semibold text-foreground">1,000 customers</span> we
+            uncovered an average of{" "}
+            <span className="font-semibold text-foreground">$532 per account</span>. Multiply that
+            across every Aussie household and the collective opportunity is enormous.
+          </p>
+        </div>
+
+        {/* Headline stats */}
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <StatCard
+            icon={<Users className="h-5 w-5" />}
+            tone="var(--tl-blue)"
+            label="First 1,000 customers"
+            value={fmtAUD(perAccountCount)}
+            sub="avg. verified saving per account"
+          />
+          <StatCard
+            icon={<TrendingUp className="h-5 w-5" />}
+            tone="var(--tl-green)"
+            label="Collective savings / 12 mo"
+            value={fmtAUD(annualCount)}
+            sub="across our founding cohort"
+          />
+          <StatCard
+            icon={<Target className="h-5 w-5" />}
+            tone="var(--tl-yellow)"
+            label="Compounded over 3 years"
+            value={fmtAUD(threeYearCount)}
+            sub="$1,596 saved per household"
+          />
+        </div>
+
+        {/* Animated chart */}
+        <div className="mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Collective Savings Trajectory
+              </p>
+              <h3 className="mt-1 font-display text-xl font-bold">
+                From founding cohort to $1B mission — and beyond
+              </h3>
+            </div>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-blue)" }} />
+                Today
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-green)" }} />
+                $1B Goal (EOY 2026)
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-yellow)" }} />
+                2027 Trajectory
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-6 w-full overflow-hidden">
+            <svg
+              viewBox={`0 0 ${W} ${H}`}
+              className="h-auto w-full"
+              preserveAspectRatio="none"
+              role="img"
+              aria-label="Collective savings trajectory chart"
+            >
+              <defs>
+                <linearGradient id="savingsArea" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="var(--tl-green)" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="var(--tl-green)" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="savingsLine" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%" stopColor="var(--tl-blue)" />
+                  <stop offset="55%" stopColor="var(--tl-green)" />
+                  <stop offset="100%" stopColor="var(--tl-yellow)" />
+                </linearGradient>
+              </defs>
+
+              {/* gridlines */}
+              {[0, 0.5, 1, 1.5, 2].map((g) => (
+                <g key={g}>
+                  <line
+                    x1={PAD_L}
+                    x2={W - PAD_R}
+                    y1={yFor(g)}
+                    y2={yFor(g)}
+                    stroke="currentColor"
+                    className="text-border"
+                    strokeDasharray="3 4"
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={PAD_L - 8}
+                    y={yFor(g) + 4}
+                    textAnchor="end"
+                    className="fill-muted-foreground"
+                    style={{ fontSize: 10 }}
+                  >
+                    ${g === 0 ? "0" : `${g}B`}
+                  </text>
+                </g>
+              ))}
+
+              {/* $1B goal marker */}
+              <line
+                x1={PAD_L}
+                x2={W - PAD_R}
+                y1={yFor(1)}
+                y2={yFor(1)}
+                stroke="var(--tl-green)"
+                strokeOpacity="0.5"
+                strokeWidth={1.2}
+                strokeDasharray="6 6"
+              />
+
+              {/* area */}
+              <path
+                d={areaPath}
+                fill="url(#savingsArea)"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transition: "opacity 900ms ease 300ms",
+                }}
+              />
+              {/* line */}
+              <path
+                d={linePath}
+                fill="none"
+                stroke="url(#savingsLine)"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  strokeDasharray: 2000,
+                  strokeDashoffset: visible ? 0 : 2000,
+                  transition: "stroke-dashoffset 2000ms cubic-bezier(.4,0,.2,1)",
+                }}
+              />
+
+              {/* points */}
+              {points.map((p, i) => {
+                const cx = xFor(i);
+                const cy = yFor(p.value);
+                const color = p.current
+                  ? "var(--tl-blue)"
+                  : p.goal
+                    ? "var(--tl-green)"
+                    : "var(--tl-yellow)";
+                return (
+                  <g
+                    key={p.label}
+                    style={{
+                      opacity: visible ? 1 : 0,
+                      transition: `opacity 400ms ease ${600 + i * 180}ms, transform 400ms ease ${600 + i * 180}ms`,
+                    }}
+                  >
+                    {(p.current || p.goal) && (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={14}
+                        fill={color}
+                        opacity={0.18}
+                        className="animate-ping"
+                      />
+                    )}
+                    <circle cx={cx} cy={cy} r={p.current || p.goal ? 6 : 4} fill={color} />
+                    {p.goal && (
+                      <text
+                        x={cx}
+                        y={cy - 18}
+                        textAnchor="middle"
+                        className="fill-foreground"
+                        style={{ fontSize: 11, fontWeight: 700 }}
+                      >
+                        $1B Mission
+                      </text>
+                    )}
+                    {p.current && (
+                      <text
+                        x={cx}
+                        y={cy - 18}
+                        textAnchor="middle"
+                        className="fill-foreground"
+                        style={{ fontSize: 11, fontWeight: 700 }}
+                      >
+                        You are here
+                      </text>
+                    )}
+                    <text
+                      x={cx}
+                      y={H - PAD_B + 18}
+                      textAnchor="middle"
+                      className="fill-muted-foreground"
+                      style={{ fontSize: 10 }}
+                    >
+                      {p.label}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <MissionStat label="Today" value="$0.5M" tone="var(--tl-blue)" hint="founding cohort to date" />
+            <MissionStat label="End of 2026" value="$1B" tone="var(--tl-green)" hint="our public commitment" />
+            <MissionStat label="End of 2027" value="$2.2B" tone="var(--tl-yellow)" hint="projected trajectory" />
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Every member moves the line. Join us — keep your $532, multiply the mission.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatCard({
+  icon,
+  tone,
+  label,
+  value,
+  sub,
+}: {
+  icon: React.ReactNode;
+  tone: string;
+  label: string;
+  value: string;
+  sub: string;
+}) {
+  return (
+    <div
+      className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-5 transition-transform hover:-translate-y-0.5"
+      style={{
+        boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tone} 12%, transparent)`,
+      }}
+    >
+      <div
+        className="grid h-9 w-9 place-items-center rounded-lg"
+        style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+      >
+        {icon}
+      </div>
+      <p className="mt-4 text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p
+        className="mt-1 font-display text-3xl font-bold tracking-tight tabular-nums"
+        style={{ color: tone }}
+      >
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+    </div>
+  );
+}
+
+function MissionStat({
+  label,
+  value,
+  tone,
+  hint,
+}: {
+  label: string;
+  value: string;
+  tone: string;
+  hint: string;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-background/40 p-4">
+      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="mt-1 font-display text-2xl font-bold" style={{ color: tone }}>
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+    </div>
+  );
+}
