@@ -476,14 +476,63 @@ function ProgressArc() {
     { c: "var(--tl-yellow)", label: "Switch" },
     { c: "var(--tl-green)", label: "Save" },
   ];
-  const [progress, setProgress] = useState(0.1);
+  const stageSequence = [
+    { progress: 0.12, holdMs: 3200 },
+    { progress: 0.37, holdMs: 900 },
+    { progress: 0.62, holdMs: 900 },
+    { progress: 0.9, holdMs: 3200 },
+  ];
+  const [progress, setProgress] = useState(stageSequence[0].progress);
   useEffect(() => {
-    let f = 0;
-    const id = setInterval(() => {
-      f += 1;
-      setProgress(0.1 + ((Math.sin(f / 14) + 1) / 2) * 0.85);
-    }, 80);
-    return () => clearInterval(id);
+    let cancelled = false;
+    let currentProgress = stageSequence[0].progress;
+    const transitionMs = 450;
+
+    const delay = (ms: number) =>
+      new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+      });
+
+    const animateTo = (target: number) =>
+      new Promise<void>((resolve) => {
+        const start = currentProgress;
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          if (cancelled) {
+            resolve();
+            return;
+          }
+          const t = Math.min(1, (now - t0) / transitionMs);
+          const eased = t * (2 - t);
+          const p = start + (target - start) * eased;
+          currentProgress = p;
+          setProgress(p);
+          if (t < 1) requestAnimationFrame(tick);
+          else resolve();
+        };
+        requestAnimationFrame(tick);
+      });
+
+    const runLoop = async () => {
+      let idx = 0;
+      while (!cancelled) {
+        const stage = stageSequence[idx];
+        if (idx === 0) {
+          currentProgress = stage.progress;
+          setProgress(stage.progress);
+        } else {
+          await animateTo(stage.progress);
+        }
+        if (cancelled) break;
+        await delay(stage.holdMs);
+        idx = (idx + 1) % stageSequence.length;
+      }
+    };
+
+    runLoop();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // arc geometry — half circle
@@ -506,7 +555,7 @@ function ProgressArc() {
       <div className="glass-card rounded-3xl p-6 sm:p-8" style={{ boxShadow: `0 30px 80px -30px ${tone.c}55` }}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Financial Status</p>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Financial Savings</p>
             <p className="mt-1 font-display text-xl font-bold" style={{ color: tone.c }}>{tone.label}</p>
           </div>
           <div className="flex items-center gap-1.5">
