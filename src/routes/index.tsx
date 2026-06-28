@@ -175,6 +175,74 @@ function Landing() {
   );
 }
 
+/* --- How It Works --- */
+function HowItWorksSection() {
+  const steps = [
+    {
+      icon: Link2,
+      title: "1. Link your accounts",
+      body: "Connect your banks, super and credit cards in under 2 minutes via Australia's official Open Banking (CDR) system. Read-only — we can never move your money.",
+    },
+    {
+      icon: Search,
+      title: "2. We scan every bill for hikes",
+      body: "MoneyMap monitors your internet, mobile, energy, utilities, insurance and subscriptions daily. We spot silent price rises and cheaper plans that match your actual usage.",
+    },
+    {
+      icon: Bell,
+      title: "3. One tap to switch and save",
+      body: "When we find a better deal, you get a clear alert with a Switch & Save action. No forms, no call centres, no loyalty tax — just real money back in your pocket.",
+    },
+  ];
+
+  const categories = [
+    { icon: Wifi, label: "Internet" },
+    { icon: Smartphone, label: "Mobile" },
+    { icon: Zap, label: "Energy" },
+    { icon: Droplets, label: "Utilities" },
+    { icon: Home, label: "Insurance" },
+    { icon: TrendingDown, label: "Subscriptions" },
+  ];
+
+  return (
+    <section className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
+          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We hunt the hikes. You keep the cash.</h2>
+          <p className="mt-4 text-muted-foreground">
+            No spreadsheets. No comparison-site rabbit holes. MoneyMap automatically alerts you when a better deal is available for the same service — internet, mobile, energy, utilities, insurance and more.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
+          {steps.map((s) => (
+            <Card key={s.title} className="border-border bg-surface p-6 transition-transform hover:-translate-y-0.5">
+              <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/15 text-primary">
+                <s.icon className="h-6 w-6" />
+              </div>
+              <h3 className="mt-4 font-display text-lg font-semibold">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+            </Card>
+          ))}
+        </div>
+
+        <div className="mt-12">
+          <p className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">We watch the bills that hurt most</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            {categories.map((c) => (
+              <div key={c.label} className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-muted-foreground">
+                <c.icon className="h-4 w-4 text-primary" />
+                {c.label}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* --- 5-Colour Progress Arc --- */
 function ProgressArc() {
   const stops = [
