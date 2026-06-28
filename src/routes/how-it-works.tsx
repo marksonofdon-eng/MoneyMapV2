@@ -6,8 +6,8 @@ import { Link2, Search, Bell, ArrowRight } from "lucide-react";
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
-      { title: "How it Works — MoneyHub" },
-      { name: "description", content: "Three quiet steps. Real cash back in your pocket. Here's how MoneyHub works." },
+      { title: "How it Works — MoneyMap" },
+      { name: "description", content: "Three quiet steps. Real cash back in your pocket. Here's how MoneyMap works." },
     ],
   }),
   component: How,
