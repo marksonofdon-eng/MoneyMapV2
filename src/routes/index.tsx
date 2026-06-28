@@ -30,9 +30,9 @@ function Landing() {
           }}
           aria-hidden
         />
-        <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-16 sm:px-6 sm:pt-24 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16 lg:px-8 lg:pt-28">
-          {/* Left */}
-          <div>
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-20 pt-16 sm:gap-10 sm:px-6 sm:pt-24 lg:grid lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-28 xl:grid-cols-[0.9fr_1.1fr] xl:gap-16">
+          {/* Headline + explanation */}
+          <div className="order-1 lg:col-start-1 lg:row-start-1">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
               <Radar className="h-3.5 w-3.5 text-primary" />
               Find savings · stay on watch
@@ -42,30 +42,33 @@ function Landing() {
               Beat the cost of living crisis.
             </h1>
             <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              MoneyMap finds the savings you&apos;re missing today — then keeps watching your bills in the background,
-              month after month. When rates rise, plans drift, or a better deal appears, you get alerted before the
-              loyalty tax creeps back in.
+              MoneyMap will scan your bills to find missed savings TODAY. Sign up for continuous monthly monitoring to keep
+              your hard-earned cash in your pocket. The moment your rates hike or a cheaper deal drops, you get alerted
+              instantly.
             </p>
+          </div>
 
-            <HeroMonitoringPoints className="mt-8" />
-            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row">
+          {/* Radar — after explanation on mobile; right column on desktop */}
+          <div className="order-2 w-full lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center">
+            <ProgressArc />
+          </div>
+
+          {/* Monitoring strip + CTA — after radar on mobile */}
+          <div className="order-3 lg:col-start-1 lg:row-start-2">
+            <HeroMonitoringPoints />
+            <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-start">
               <Button
                 size="lg"
                 onClick={() => setOpen(true)}
-                className="h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green"
+                className="h-12 w-full bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green sm:w-auto"
               >
                 Claim Your Hidden Savings Now <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
             <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
               Connect once · 24/7 monitoring · Secured via Open Banking
             </p>
-          </div>
-
-          {/* Right — 4-Stage Savings Radar */}
-          <div className="relative">
-            <ProgressArc />
           </div>
         </div>
       </section>
@@ -102,7 +105,7 @@ const HERO_MONITORING_POINTS = [
   {
     icon: Search,
     title: "Find savings",
-    body: "First scan shows what you're overpaying right now",
+    body: "Instantly see bills you're overpaying right now.",
   },
   {
     icon: Bell,
@@ -111,8 +114,8 @@ const HERO_MONITORING_POINTS = [
   },
   {
     icon: Radar,
-    title: "Stay protected",
-    body: "Ongoing monitoring so savings don't slip away next quarter",
+    title: "Stay Protected",
+    body: "We keep monitoring for hidden bill price hikes.",
   },
 ] as const;
 
@@ -477,23 +480,24 @@ function ProgressArc() {
     { c: "var(--tl-green)", label: "Save" },
   ];
   const stageSequence = [
-    { progress: 0.12, holdMs: 3200 },
-    { progress: 0.37, holdMs: 900 },
-    { progress: 0.62, holdMs: 900 },
-    { progress: 0.9, holdMs: 3200 },
+    { progress: 0, holdMs: 3200 },
+    { progress: 0.35, holdMs: 900 },
+    { progress: 0.65, holdMs: 900 },
+    { progress: 1, holdMs: 3200 },
   ];
+  const forwardTransitionMs = 450;
+  const rollbackTransitionMs = 1400;
   const [progress, setProgress] = useState(stageSequence[0].progress);
   useEffect(() => {
     let cancelled = false;
     let currentProgress = stageSequence[0].progress;
-    const transitionMs = 450;
 
     const delay = (ms: number) =>
       new Promise<void>((resolve) => {
         setTimeout(resolve, ms);
       });
 
-    const animateTo = (target: number) =>
+    const animateTo = (target: number, duration: number) =>
       new Promise<void>((resolve) => {
         const start = currentProgress;
         const t0 = performance.now();
@@ -502,30 +506,34 @@ function ProgressArc() {
             resolve();
             return;
           }
-          const t = Math.min(1, (now - t0) / transitionMs);
+          const t = Math.min(1, (now - t0) / duration);
           const eased = t * (2 - t);
           const p = start + (target - start) * eased;
           currentProgress = p;
           setProgress(p);
           if (t < 1) requestAnimationFrame(tick);
-          else resolve();
+          else {
+            currentProgress = target;
+            setProgress(target);
+            resolve();
+          }
         };
         requestAnimationFrame(tick);
       });
 
     const runLoop = async () => {
-      let idx = 0;
       while (!cancelled) {
-        const stage = stageSequence[idx];
-        if (idx === 0) {
-          currentProgress = stage.progress;
-          setProgress(stage.progress);
-        } else {
-          await animateTo(stage.progress);
-        }
+        await delay(stageSequence[0].holdMs);
         if (cancelled) break;
-        await delay(stage.holdMs);
-        idx = (idx + 1) % stageSequence.length;
+
+        for (let idx = 1; idx < stageSequence.length; idx++) {
+          await animateTo(stageSequence[idx].progress, forwardTransitionMs);
+          if (cancelled) break;
+          await delay(stageSequence[idx].holdMs);
+        }
+
+        if (cancelled) break;
+        await animateTo(0, rollbackTransitionMs);
       }
     };
 
@@ -535,37 +543,38 @@ function ProgressArc() {
     };
   }, []);
 
-  // arc geometry — half circle
-  const R = 130;
-  const cx = 170;
-  const cy = 170;
-  const start = Math.PI; // 180°
-  const end = 0;         // 0°
-  const a = start + (end - start) * progress;
-  const px = cx + R * Math.cos(a);
-  const py = cy + R * Math.sin(a);
+  // arc geometry — half circle from Today (left) to Year 3 (right)
+  const R = 175;
+  const cx = 215;
+  const cy = 188;
+  const arcPath = `M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`;
+  const visualProgress = Math.min(1, Math.max(0, progress));
+  const angle = Math.PI * (1 - visualProgress);
+  const px = cx + R * Math.cos(angle);
+  const py = cy + R * Math.sin(angle);
+  const savings = Math.round(1500 + visualProgress * (10000 - 1500));
 
   const tone =
-    progress < 0.25 ? stops[0] :
-    progress < 0.5 ? stops[1] :
-    progress < 0.75 ? stops[2] : stops[3];
+    visualProgress < 0.25 ? stops[0] :
+    visualProgress < 0.5 ? stops[1] :
+    visualProgress < 0.75 ? stops[2] : stops[3];
 
   return (
-    <div className="relative mx-auto w-full max-w-md">
-      <div className="glass-card rounded-3xl p-6 sm:p-8" style={{ boxShadow: `0 30px 80px -30px ${tone.c}55` }}>
-        <div className="flex items-center justify-between">
+    <div className="relative mx-auto w-full max-w-xl sm:max-w-2xl lg:max-w-none">
+      <div className="glass-card rounded-3xl p-7 sm:p-9 lg:p-10" style={{ boxShadow: `0 30px 80px -30px ${tone.c}55` }}>
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Your Financial Savings</p>
-            <p className="mt-1 font-display text-xl font-bold" style={{ color: tone.c }}>{tone.label}</p>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground sm:text-sm">Your Financial Savings</p>
+            <p className="mt-1 font-display text-2xl font-bold sm:text-3xl" style={{ color: tone.c }}>{tone.label}</p>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {stops.map((s) => (
-              <span key={s.label} className="h-2.5 w-2.5 rounded-full" style={{ background: s.c, opacity: s.label === tone.label ? 1 : 0.35 }} />
+              <span key={s.label} className="h-3 w-3 rounded-full sm:h-3.5 sm:w-3.5" style={{ background: s.c, opacity: s.label === tone.label ? 1 : 0.35 }} />
             ))}
           </div>
         </div>
 
-        <svg viewBox="0 0 340 200" className="mt-4 w-full">
+        <svg viewBox="0 0 430 235" className="mt-5 w-full sm:mt-6">
           <defs>
             <linearGradient id="arcgrad" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0%" stopColor="var(--tl-red)" />
@@ -574,18 +583,27 @@ function ProgressArc() {
               <stop offset="100%" stopColor="var(--tl-green)" />
             </linearGradient>
           </defs>
-          <path d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="14" strokeLinecap="round" />
-          <path d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`} fill="none" stroke="url(#arcgrad)" strokeWidth="14" strokeLinecap="round" strokeDasharray={`${Math.PI * R * progress}, ${Math.PI * R}`} />
-          <circle cx={px} cy={py} r="10" fill={tone.c} stroke="#0E0F12" strokeWidth="3" />
-          <text x={cx} y={cy - 20} textAnchor="middle" fontFamily="Inter" fontSize="11" fill="#8E8E93" letterSpacing="2">3 YEAR SAVINGS</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fontFamily="Inter" fontSize="28" fontWeight="700" fill="#F5F5F7">${Math.round(1500 + (progress - 0.1) * (10000 - 1500) / (0.95 - 0.1)).toLocaleString()}</text>
+          <path d={arcPath} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="18" strokeLinecap="round" />
+          <path
+            d={arcPath}
+            fill="none"
+            stroke="url(#arcgrad)"
+            strokeWidth="18"
+            strokeLinecap="round"
+            pathLength={1}
+            strokeDasharray={1}
+            strokeDashoffset={1 - visualProgress}
+          />
+          <circle cx={px} cy={py} r="13" fill={tone.c} stroke="#0E0F12" strokeWidth="3" />
+          <text x={cx} y={cy - 24} textAnchor="middle" fontFamily="Inter" fontSize="13" fill="#8E8E93" letterSpacing="2">3 YEAR SAVINGS</text>
+          <text x={cx} y={cy + 12} textAnchor="middle" fontFamily="Inter" fontSize="36" fontWeight="700" fill="#F5F5F7">${savings.toLocaleString()}</text>
         </svg>
 
-        <div className="mt-2 flex justify-between text-[10px] text-muted-foreground">
+        <div className="mt-3 flex justify-between text-xs text-muted-foreground sm:text-sm">
           <span>Today</span><span>Year 1</span><span>Year 3</span>
         </div>
       </div>
-      <div className="pointer-events-none absolute -inset-8 -z-10 rounded-full opacity-50 blur-3xl" style={{ background: `radial-gradient(circle, ${tone.c}44, transparent 70%)` }} />
+      <div className="pointer-events-none absolute -inset-10 -z-10 rounded-full opacity-50 blur-3xl sm:-inset-12" style={{ background: `radial-gradient(circle, ${tone.c}44, transparent 70%)` }} />
     </div>
   );
 }
