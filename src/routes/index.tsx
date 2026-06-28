@@ -246,7 +246,7 @@ function HowItWorksSection() {
 /* --- 4-Stage Savings Radar --- */
 function ProgressArc() {
   const stops = [
-    { c: "var(--tl-red)", label: "Alert" },
+    { c: "var(--tl-red)", label: "Bill Alert" },
     { c: "var(--tl-orange)", label: "Assess" },
     { c: "var(--tl-yellow)", label: "Switch" },
     { c: "var(--tl-green)", label: "Save" },
