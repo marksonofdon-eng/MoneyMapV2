@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ArrowRight, ShieldCheck, TrendingDown, EyeOff, FileX, AlertCircle, Lock, Sparkles, Home, KeyRound, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ShieldCheck, TrendingDown, EyeOff, FileX, AlertCircle, Lock, Sparkles, Home, KeyRound, CheckCircle2, Link2, Search, Bell, Zap, Smartphone, Wifi, Droplets } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
