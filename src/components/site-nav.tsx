@@ -1,15 +1,35 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Wallet } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkAccountsDialog } from "./link-accounts-dialog";
 
 const tabs = [
   { to: "/how-it-works", label: "How it Works" },
   { to: "/dashboard", label: "My Dashboard" },
-  { to: "/alerts", label: "Bill & Price Hike Alerts" },
+  { to: "/alerts", label: "Bill & Price Hike Alerts", badge: 2 },
   { to: "/wealth", label: "My Wealth Tool" },
 ] as const;
+
+function Logo() {
+  return (
+    <Link to="/" className="flex items-center gap-2.5 shrink-0">
+      <span className="relative grid h-8 w-8 place-items-center">
+        <span
+          className="absolute inset-0 rounded-full border-2"
+          style={{ borderColor: "var(--tl-blue)", opacity: 0.85 }}
+        />
+        <span
+          className="absolute inset-[5px] rounded-full border-2"
+          style={{ borderColor: "var(--tl-green)" }}
+        />
+      </span>
+      <span className="font-display text-lg font-bold tracking-tight text-foreground">
+        Money<span className="text-foreground">Map</span>
+      </span>
+    </Link>
+  );
+}
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
@@ -17,16 +37,9 @@ export function SiteNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <Wallet className="h-4 w-4" />
-          </span>
-          <span className="font-display text-lg font-bold tracking-tight">
-            Money<span className="text-primary">Hub</span>
-          </span>
-        </Link>
+        <Logo />
 
         <nav className="hidden items-center gap-1 lg:flex">
           {tabs.map((t) => {
@@ -35,11 +48,21 @@ export function SiteNav() {
               <Link
                 key={t.to}
                 to={t.to}
-                className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                className={`relative rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   active ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {t.label}
+                <span className="inline-flex items-center gap-2">
+                  {t.label}
+                  {"badge" in t && t.badge ? (
+                    <span
+                      className="pulse-dot grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] font-bold text-background"
+                      style={{ backgroundColor: "var(--tl-red)", color: "#fff" }}
+                    >
+                      {t.badge}
+                    </span>
+                  ) : null}
+                </span>
               </Link>
             );
           })}
@@ -48,9 +71,9 @@ export function SiteNav() {
         <div className="flex items-center gap-2">
           <Button
             onClick={() => setLinkOpen(true)}
-            className="hidden bg-primary text-primary-foreground hover:bg-primary/90 sm:inline-flex"
+            className="hidden bg-primary text-primary-foreground hover:bg-primary/90 sm:inline-flex font-semibold"
           >
-            Link My Accounts
+            Stop Overpaying Instantly
           </Button>
           <button
             onClick={() => setOpen((v) => !v)}
@@ -63,20 +86,28 @@ export function SiteNav() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 lg:hidden">
+        <div className="border-t border-border lg:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-4 py-2 sm:px-6">
             {tabs.map((t) => (
               <Link
                 key={t.to}
                 to={t.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="flex items-center justify-between rounded-md px-3 py-3 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
               >
-                {t.label}
+                <span>{t.label}</span>
+                {"badge" in t && t.badge ? (
+                  <span
+                    className="grid h-5 min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold text-white"
+                    style={{ backgroundColor: "var(--tl-red)" }}
+                  >
+                    {t.badge}
+                  </span>
+                ) : null}
               </Link>
             ))}
-            <Button onClick={() => { setOpen(false); setLinkOpen(true); }} className="mt-2 bg-primary text-primary-foreground hover:bg-primary/90">
-              Link My Accounts
+            <Button onClick={() => { setOpen(false); setLinkOpen(true); }} className="mt-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+              Stop Overpaying Instantly
             </Button>
           </nav>
         </div>
