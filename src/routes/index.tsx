@@ -251,12 +251,12 @@ function ProgressArc() {
     { c: "var(--tl-yellow)", label: "Switch" },
     { c: "var(--tl-green)", label: "Save" },
   ];
-  const [progress, setProgress] = useState(0.25);
+  const [progress, setProgress] = useState(0.1);
   useEffect(() => {
     let f = 0;
     const id = setInterval(() => {
       f += 1;
-      setProgress(0.25 + ((Math.sin(f / 14) + 1) / 2) * 0.7);
+      setProgress(0.1 + ((Math.sin(f / 14) + 1) / 2) * 0.85);
     }, 80);
     return () => clearInterval(id);
   }, []);
