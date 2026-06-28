@@ -10,7 +10,7 @@ import { TrendingUp, Target } from "lucide-react";
 export const Route = createFileRoute("/wealth")({
   head: () => ({
     meta: [
-      { title: "My Wealth Tool — MoneyHub" },
+      { title: "My Wealth Tool — MoneyMap" },
       { name: "description", content: "Project your net worth and see what a small monthly habit becomes in 10 years." },
     ],
   }),

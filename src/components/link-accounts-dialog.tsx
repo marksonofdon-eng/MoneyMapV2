@@ -43,7 +43,7 @@ export function LinkAccountsDialog({ open, onOpenChange }: { open: boolean; onOp
           <DialogDescription>
             {step === "pick" && "Bank-grade encryption. Read-only access. Disconnect anytime."}
             {step === "auth" && "We never see or store your password."}
-            {step === "done" && "MoneyHub is now quietly scanning for savings in the background."}
+            {step === "done" && "MoneyMap is now quietly scanning for savings in the background."}
           </DialogDescription>
         </DialogHeader>
 
