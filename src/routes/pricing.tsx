@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ShieldCheck,
   Zap,
@@ -10,6 +10,10 @@ import {
   Home as HomeIcon,
   Sparkles,
   ArrowRight,
+  TrendingUp,
+  Users,
+  Target,
+  Flag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
