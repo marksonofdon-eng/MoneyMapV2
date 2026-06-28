@@ -32,11 +32,12 @@ function Landing() {
             </div>
             <h1 className="font-display text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-[3.5rem]"
                 style={{ backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Put Your Savings on Cruise Control
+              Beat the cost of living crisis.
             </h1>
             <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-              MoneyMap works quietly in the background, scanning your bills and bank accounts to find hidden price hikes, ditch the "Loyalty Tax", and automatically grow your net worth.
+              Stop overpaying today. MoneyMap works quietly in the background, scanning your bills and bank accounts to find hidden price hikes, ditch the "Loyalty Tax", and automatically grow your net worth.
             </p>
+
 
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row">
               <Button
