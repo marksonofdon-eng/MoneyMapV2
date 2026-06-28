@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Zap, Wifi, Smartphone, Dumbbell, Umbrella, X, CheckCircle2, ArrowRight, Loader2, Layers, ShieldCheck, Flame, AlertCircle, AlertTriangle } from "lucide-react";
+import { Zap, Wifi, Smartphone, Dumbbell, Umbrella, X, CheckCircle2, ArrowRight, Loader2, Layers, ShieldCheck, Shield, Activity, Flame, AlertCircle, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/alerts")({
   head: () => ({
@@ -39,6 +40,9 @@ function Alerts() {
           <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Real money back in your pocket — quietly.</h1>
           <p className="mt-4 text-muted-foreground">The autonomous engine works in the background. We only ping you when there's real money to save.</p>
         </header>
+
+        {/* Timeline Section */}
+        <TimelineSection />
 
         {/* SECTION 1 — Immediate Actions */}
         <section>
@@ -251,6 +255,122 @@ function Metric({ label, value }: { label: string; value: string }) {
       <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-1 font-display text-base font-semibold">{value}</p>
     </div>
+  );
+}
+
+function TimelineSection() {
+  const steps = [
+    {
+      phase: "yesterday",
+      heading: "Yesterday",
+      badge: "Unprotected",
+      badgeTone: "amber" as const,
+      icon: <AlertTriangle className="h-5 w-5" />,
+      content: "No active monitoring. Price hikes go unnoticed, loyalty taxes accumulate, and hidden savings are missed entirely.",
+      muted: true,
+    },
+    {
+      phase: "today",
+      heading: "Today",
+      badge: "Active Scan",
+      badgeTone: "green" as const,
+      icon: <Activity className="h-5 w-5" />,
+      content: "MoneyMap deploys. The autonomous engine instantly scans your bills, targets overcharges, and unlocks immediate cash savings.",
+      active: true,
+    },
+    {
+      phase: "tomorrow",
+      heading: "Tomorrow",
+      badge: "Continuous Defense",
+      badgeTone: "green" as const,
+      icon: <Shield className="h-5 w-5" />,
+      content: "Relentless background tracking. Whenever a cheaper product appears or an existing provider raises rates, your wealth stays guarded.",
+      muted: false,
+    },
+  ];
+
+  return (
+    <section className="relative mb-16 pt-5 animate-fade-in">
+      {/* Desktop timeline track */}
+      <div className="pointer-events-none absolute top-5 left-0 right-0 hidden h-0.5 md:block bg-gradient-to-r from-[var(--tl-yellow)]/20 via-primary/50 to-primary/20" />
+      {/* Mobile timeline track */}
+      <div className="pointer-events-none absolute left-5 top-0 bottom-0 w-0.5 md:hidden bg-gradient-to-b from-[var(--tl-yellow)]/20 via-primary/50 to-primary/20" />
+
+      <div className="flex flex-col gap-6 md:flex-row md:gap-4">
+        {steps.map((step, i) => (
+          <div
+            key={step.phase}
+            className="relative flex-1 animate-fade-in"
+            style={{ animationDelay: `${i * 120}ms`, animationFillMode: "backwards" }}
+          >
+            <TimelineCard {...step} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TimelineCard({
+  heading,
+  badge,
+  badgeTone,
+  icon,
+  content,
+  active,
+  muted,
+}: {
+  heading: string;
+  badge: string;
+  badgeTone: "amber" | "green";
+  icon: React.ReactNode;
+  content: string;
+  active?: boolean;
+  muted?: boolean;
+}) {
+  const accent = badgeTone === "amber" ? "var(--tl-yellow)" : "var(--tl-green)";
+  const badgeClasses =
+    badgeTone === "amber"
+      ? "bg-[var(--tl-yellow)]/10 text-[var(--tl-yellow)]"
+      : "bg-primary/10 text-primary";
+
+  return (
+    <Card
+      className={cn(
+        "group relative p-6 pt-12 pl-12 md:pl-6 md:pt-12 transition-all duration-300 hover:-translate-y-0.5",
+        muted ? "bg-surface/60 border-white/5 opacity-90" : "bg-surface border-border",
+        active && "border-primary/50 shadow-[0_20px_60px_-30px_rgba(0,230,118,0.35)]"
+      )}
+    >
+      {/* Timeline node */}
+      <span
+        className={cn(
+          "absolute top-0 z-20 grid h-10 w-10 place-items-center rounded-full border bg-surface transition-transform duration-300 group-hover:scale-110",
+          active ? "border-primary/50" : "border-border",
+          "left-5 -translate-x-1/2 -translate-y-1/2 md:left-1/2"
+        )}
+        style={{ color: accent }}
+      >
+        {icon}
+        {active && (
+          <span className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ background: accent }} />
+        )}
+      </span>
+
+      <div className="relative">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className={cn("font-display text-xl font-bold", active ? "text-primary" : "text-foreground")}>
+            {heading}
+          </h3>
+          <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", badgeClasses)}>
+            {badge}
+          </span>
+        </div>
+        <p className={cn("mt-3 text-sm leading-relaxed", muted ? "text-muted-foreground/70" : "text-muted-foreground")}>
+          {content}
+        </p>
+      </div>
+    </Card>
   );
 }
 
