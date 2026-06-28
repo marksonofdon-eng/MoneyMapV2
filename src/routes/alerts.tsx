@@ -71,9 +71,9 @@ const YESTERDAY_LEAKS: LeakItem[] = [
 const YESTERDAY_TOTAL = YESTERDAY_LEAKS.reduce((sum, item) => sum + item.amount, 0);
 
 const PAGE_STATS = [
-  { label: "Missed last year", value: 1696, highlight: "loss" as const },
-  { label: "Savings available today", value: 580, highlight: "savings" as const },
-  { label: "Savings next year", value: 606, highlight: null },
+  { beat: "Leak", label: "Missed Savings last year", value: 1696, highlight: "loss" as const },
+  { beat: "Recover", label: "Savings available today", value: 580, highlight: "savings" as const },
+  { beat: "Protect", label: "Savings next year", value: 606, highlight: "watch" as const },
 ] as const;
 
 const HOW_IT_WORKS_STEPS = [
@@ -141,7 +141,7 @@ function AlertsHeroSection({
               {alertCount} bill switches are ready right now. Activate MoneyMap to recover what slipped through last
               year — and let autopilot watch tomorrow&apos;s bills for you.
             </p>
-            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row">
+            <div className="mt-8">
               <Button
                 size="lg"
                 onClick={onActivate}
@@ -150,12 +150,6 @@ function AlertsHeroSection({
                 Activate MoneyMap
                 <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
-              <a
-                href="#savings-feed"
-                className="inline-flex h-12 items-center rounded-lg border border-border bg-background/40 px-5 text-sm font-medium text-foreground/90 transition-colors hover:bg-background/70"
-              >
-                See your full feed
-              </a>
             </div>
             <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-tl-blue" />
@@ -262,47 +256,42 @@ function SavingsJourneyStrip({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "grid overflow-hidden rounded-2xl border border-border/80 bg-surface/50 backdrop-blur-sm sm:grid-cols-[1fr_auto_1.15fr_auto_1fr]",
+        "rounded-2xl border border-border/50 bg-surface/20 px-5 py-5 sm:px-8 sm:py-6",
         className,
       )}
     >
-      {PAGE_STATS.map((stat, index) => {
-        const isToday = stat.highlight === "savings";
-        const isLoss = stat.highlight === "loss";
-        const isProtect = index === 2;
+      <div className="grid gap-6 sm:grid-cols-3 sm:gap-0">
+        {PAGE_STATS.map((stat, index) => {
+          const isLoss = stat.highlight === "loss";
+          const isToday = stat.highlight === "savings";
+          const isWatch = stat.highlight === "watch";
 
-        return (
-          <div key={stat.label} className="contents">
-            {index > 0 ? (
-              <div className="hidden items-center justify-center px-2 sm:flex" aria-hidden>
-                <ArrowRight className="h-4 w-4 text-border" />
-              </div>
-            ) : null}
+          return (
             <div
+              key={stat.beat}
               className={cn(
-                "border-b border-border/60 px-5 py-4 last:border-b-0 sm:border-b-0 sm:px-6 sm:py-5",
-                isToday && "bg-primary/[0.06] sm:ring-1 sm:ring-inset sm:ring-primary/20",
-                isProtect && "bg-tl-blue/[0.05] sm:ring-1 sm:ring-inset sm:ring-tl-blue/20",
+                "min-w-0",
+                index > 0 && "border-t border-border/35 pt-6 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-8",
               )}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                {index === 0 ? "Leak" : index === 1 ? "Recover" : "Protect"}
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {stat.beat}
               </p>
               <p
                 className={cn(
-                  "mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl",
+                  "mt-1 font-display text-2xl font-bold tabular-nums tracking-tight sm:text-[1.85rem]",
                   isLoss && "text-[var(--tl-red)]",
                   isToday && "text-primary",
-                  !isLoss && !isToday && "text-tl-blue",
+                  isWatch && "text-tl-blue",
                 )}
               >
                 {fmtAud(stat.value)}
               </p>
-              <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{stat.label}</p>
+              <p className="mt-1.5 max-w-[14rem] text-sm leading-relaxed text-muted-foreground">{stat.label}</p>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -404,7 +393,7 @@ function Alerts() {
           <div className="mb-6 max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">Your savings feed</p>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              Yesterday&apos;s leaks. Today&apos;s recoveries. Tomorrow on watch.
+              Leak yesterday. Recover today. Protect tomorrow.
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Scroll the three phases below — or jump from the overview inside the feed.
@@ -455,30 +444,6 @@ function Alerts() {
         </section>
 
         <HowItWorksSection />
-
-        <Panel variant="default" className="border-border/80">
-          <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10 lg:p-10">
-            <div className="lg:col-span-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">No savings, no pay</p>
-              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                Stop the leak before the next quarter turns red.
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Connect once. MoneyMap handles reviewing, alerting, and proposing switches on repeat.
-              </p>
-            </div>
-            <div className="lg:col-span-4 lg:flex lg:justify-end">
-              <Button
-                onClick={() => setLinkOpen(true)}
-                size="lg"
-                className="h-12 w-full bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green group sm:w-auto"
-              >
-                Activate MoneyMap
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-            </div>
-          </div>
-        </Panel>
       </div>
 
       <LinkAccountsDialog open={linkOpen} onOpenChange={setLinkOpen} />
@@ -632,21 +597,21 @@ function HowItWorksSection() {
 
             return (
               <li key={step.title} className="relative flex gap-4 sm:gap-5">
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center self-stretch">
                   <div
                     className={cn(
-                      "relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-border/80 bg-background/60 sm:h-12 sm:w-12",
-                      isLast ? "border-primary/40 bg-primary/10" : "border-tl-blue/30 bg-tl-blue/10",
+                      "relative z-10 grid h-11 w-11 shrink-0 place-items-center rounded-xl border bg-surface shadow-sm ring-4 ring-surface sm:h-12 sm:w-12",
+                      isLast ? "border-primary/40" : "border-tl-blue/30",
                     )}
                   >
                     <Icon className={cn("h-5 w-5", isLast ? "text-primary" : "text-tl-blue")} />
-                    <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
+                    <span className="absolute -right-1 -top-1 z-20 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
                       {index + 1}
                     </span>
                   </div>
                   {!isLast ? (
                     <span
-                      className="my-1 min-h-[2.5rem] w-px flex-1 bg-gradient-to-b from-tl-blue/40 to-border/30 sm:min-h-[3rem]"
+                      className="mt-1 w-px flex-1 bg-gradient-to-b from-tl-blue/45 via-tl-blue/25 to-border/30"
                       aria-hidden
                     />
                   ) : null}
@@ -671,8 +636,8 @@ function HowItWorksSection() {
         <div className="mt-10 hidden lg:block">
           <div className="relative">
             <div
-              className="absolute left-[10%] right-[10%] top-6 h-px bg-gradient-to-r from-tl-blue/30 via-tl-blue/50 to-primary/50"
               aria-hidden
+              className="pointer-events-none absolute left-[10%] right-[10%] top-6 z-0 h-px -translate-y-1/2 bg-gradient-to-r from-tl-blue/35 via-tl-blue/50 to-primary/50"
             />
             <ol className="relative grid grid-cols-5 gap-4">
               {HOW_IT_WORKS_STEPS.map((step, index) => {
@@ -683,14 +648,14 @@ function HowItWorksSection() {
                   <li key={`wide-${step.title}`} className="flex flex-col items-center px-1 text-center">
                     <div
                       className={cn(
-                        "relative grid h-12 w-12 place-items-center rounded-xl border border-border/80 bg-background/60",
+                        "relative z-10 grid h-12 w-12 place-items-center rounded-xl border bg-surface shadow-sm ring-[5px] ring-surface",
                         isLast
-                          ? "border-primary/40 bg-primary/10 shadow-[0_0_20px_color-mix(in_oklab,var(--primary)_15%,transparent)]"
-                          : "border-tl-blue/30 bg-tl-blue/10",
+                          ? "border-primary/40 shadow-[0_0_20px_color-mix(in_oklab,var(--primary)_15%,transparent)]"
+                          : "border-tl-blue/30",
                       )}
                     >
                       <Icon className={cn("h-5 w-5", isLast ? "text-primary" : "text-tl-blue")} />
-                      <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
+                      <span className="absolute -right-1 -top-1 z-20 grid h-4 w-4 place-items-center rounded-full bg-surface text-[9px] font-bold tabular-nums text-muted-foreground ring-1 ring-border/80">
                         {index + 1}
                       </span>
                     </div>

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { ArrowRight, ShieldCheck, TrendingDown, EyeOff, FileX, AlertCircle, Lock, Home, CheckCircle2, Link2, Search, Bell, Zap, Smartphone, Wifi, Droplets, Quote, Star, Radar } from "lucide-react";
+import { ArrowRight, ShieldCheck, TrendingDown, Lock, Home, CheckCircle2, Link2, Search, Bell, Zap, Smartphone, Wifi, Droplets, Quote, Star, Radar, BadgePercent, GitCompareArrows, FileSpreadsheet, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
@@ -330,22 +330,27 @@ function CustomerTestimonialsSection() {
   );
 }
 function ProblemSection() {
-  const problems = [
+  const problems: {
+    tone: "orange" | "red" | "yellow";
+    icon: LucideIcon;
+    title: string;
+    body: string;
+  }[] = [
     {
-      tone: "orange" as const,
-      icon: <AlertCircle className="h-5 w-5" />,
+      tone: "orange",
+      icon: BadgePercent,
       title: "The Loyal Customer Tax",
       body: "Companies quietly move old customers to expensive plans while saving the cheapest, unadvertised deals for brand new sign-ups.",
     },
     {
-      tone: "red" as const,
-      icon: <EyeOff className="h-5 w-5" />,
+      tone: "red",
+      icon: GitCompareArrows,
       title: "The Compare-Site Scam",
       body: "Old comparison websites make you do all the work yourself, take commissions from big providers, and only offer a quick, one-off fix.",
     },
     {
-      tone: "yellow" as const,
-      icon: <FileX className="h-5 w-5" />,
+      tone: "yellow",
+      icon: FileSpreadsheet,
       title: "Too Much Admin",
       body: "Old budgeting apps fail because they force you to manually track every coffee, scan paper bills, and mess around with spreadsheets.",
     },
@@ -360,8 +365,8 @@ function ProblemSection() {
             <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Why your bills keep getting more expensive</h2>
           </div>
           <p className="text-muted-foreground lg:pb-1 lg:text-right">
-            Most Australians are overpaying on autopilot — not because they&apos;re careless, but because the system is
-            designed to reward churn, not loyalty.
+            Most Australians are overpaying on autopilot not because they&apos;re careless, but because the system does not
+            reward loyalty.
           </p>
         </div>
 
@@ -611,13 +616,13 @@ function ProgressArc() {
 }
 
 function ProblemRow({
-  icon,
+  icon: Icon,
   title,
   body,
   tone,
   index,
 }: {
-  icon: React.ReactNode;
+  icon: LucideIcon;
   title: string;
   body: string;
   tone: "orange" | "red" | "yellow";
@@ -632,7 +637,7 @@ function ProblemRow({
         className="grid h-12 w-12 shrink-0 place-items-center rounded-xl sm:h-14 sm:w-14"
         style={{ background: `${c}1F`, color: c }}
       >
-        {icon}
+        <Icon className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.75} aria-hidden />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-3">

@@ -64,7 +64,7 @@ export function SiteFooter() {
         />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_auto] lg:items-center lg:gap-12 lg:px-8 lg:py-16">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">No savings, no pay</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-tl-blue">No savings, No cost to you.</p>
             <h2 className="mt-3 max-w-xl font-display text-2xl font-bold tracking-tight sm:text-3xl">
               Put your bills on cruise control.
             </h2>
