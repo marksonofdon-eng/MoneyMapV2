@@ -209,7 +209,7 @@ function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">How it Works</p>
-          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We hunt the savings. You keep the cash.</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">We only make money when you save money.</h2>
           <p className="mt-4 text-muted-foreground">
             No spreadsheets. No comparison-site rabbit holes. MoneyMap automatically alerts you when a better deal is available for the same service — internet, mobile, energy, utilities, insurance and more.
           </p>
