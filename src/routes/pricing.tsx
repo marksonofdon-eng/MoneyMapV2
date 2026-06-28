@@ -25,6 +25,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { LinkAccountsDialog } from "@/components/link-accounts-dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -54,29 +55,31 @@ function PricingPage() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[600px] page-hero-glow" />
-        <div className="mx-auto max-w-5xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pt-24 lg:px-8">
+        <div className="mx-auto max-w-5xl px-4 pb-10 pt-14 text-center sm:px-6 sm:pb-12 sm:pt-24 lg:px-8">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             Simple, honest pricing
           </div>
           <h1
-            className="font-display text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.25rem]"
+            className="font-display overflow-visible pb-1 text-[1.75rem] font-bold leading-[1.12] tracking-tight sm:text-5xl sm:leading-[1.05] lg:text-[3.25rem]"
             style={{
               backgroundImage: "linear-gradient(180deg, #F5F5F7 0%, #B8B8C0 100%)",
               WebkitBackgroundClip: "text",
+              backgroundClip: "text",
               WebkitTextFillColor: "transparent",
+              paddingBottom: "0.1em",
             }}
           >
             We Only Make Money When You Save Money
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
             MoneyMap accepts exactly $0 from suppliers, banks, or energy companies. We work 100% for you.
             Our flat membership activates only when our AI secures a minimum of $500 in verified household
             savings.
           </p>
 
           {/* Trust badges */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-6 flex flex-col items-stretch gap-2 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
             <TrustBadge icon={<ShieldCheck className="h-4 w-4" />} label="100% on your side — no supplier commissions" />
             <TrustBadge icon={<Zap className="h-4 w-4" />} label="Continuous rate guard protection" />
             <TrustBadge icon={<CheckCircle2 className="h-4 w-4" />} label="Cancel anytime, keep your savings" />
@@ -86,16 +89,16 @@ function PricingPage() {
 
       {/* TWO-TIER GRID */}
       <section className="border-t border-border">
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-5 px-4 py-12 sm:gap-6 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8">
           {/* CORE */}
-          <Card className="relative flex flex-col border-border bg-surface p-7 sm:p-8">
+          <Card className="relative flex flex-col border-border bg-surface p-5 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               MoneyMap Core
             </p>
             <h2 className="mt-1 font-display text-xl font-bold">Bill Savings Scanner</h2>
 
-            <div className="mt-6">
-              <p className="font-display text-5xl font-bold tracking-tight">$0 Upfront</p>
+            <div className="mt-5 sm:mt-6">
+              <p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">$0 Upfront</p>
               <p className="mt-2 text-sm font-medium" style={{ color: "var(--tl-green)" }}>
                 100% Free Until We Find You $500+
               </p>
@@ -120,24 +123,24 @@ function PricingPage() {
               ))}
             </ul>
 
-            <div className="mt-auto pt-8">
+            <div className="mt-auto pt-6 sm:pt-8">
               <Button
                 size="lg"
                 onClick={() => setOpen(true)}
-                className="h-12 w-full bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green"
+                className="h-auto min-h-12 w-full whitespace-normal bg-primary px-4 py-3 text-sm font-semibold leading-snug text-primary-foreground hover:bg-primary/90 glow-green sm:px-6 sm:text-base"
               >
-                Launch My Free $500+ Savings Scan <ArrowRight className="ml-1 h-4 w-4" />
+                Launch My Free $500+ Savings Scan <ArrowRight className="ml-1 inline h-4 w-4 shrink-0" />
               </Button>
             </div>
           </Card>
 
           {/* PREMIUM */}
           <Card
-            className="relative flex flex-col border-border bg-surface p-7 sm:p-8"
+            className="relative flex flex-col overflow-visible border-border bg-surface p-5 pt-8 sm:p-8 sm:pt-8"
             style={{ boxShadow: "0 0 0 1px rgba(0,229,255,0.25), 0 30px 80px -30px rgba(0,229,255,0.35)" }}
           >
             <span
-              className="absolute -top-3 right-6 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+              className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider sm:left-auto sm:right-6 sm:translate-x-0"
               style={{
                 borderColor: "var(--tl-blue)",
                 color: "var(--tl-blue)",
@@ -152,9 +155,9 @@ function PricingPage() {
             </p>
             <h2 className="mt-1 font-display text-xl font-bold">Bill Savings Autopilot</h2>
 
-            <div className="mt-6">
-              <p className="font-display text-5xl font-bold tracking-tight">
-                $4.99 <span className="text-2xl font-semibold text-muted-foreground">/ mo</span>
+            <div className="mt-5 sm:mt-6">
+              <p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
+                $4.99 <span className="text-xl font-semibold text-muted-foreground sm:text-2xl">/ mo</span>
               </p>
               <p className="mt-2 text-sm text-muted-foreground">Billed annually as an add-on</p>
               <p className="mt-1 text-sm font-medium" style={{ color: "var(--tl-green)" }}>
@@ -180,14 +183,14 @@ function PricingPage() {
               ))}
             </ul>
 
-            <div className="mt-auto pt-8">
+            <div className="mt-auto pt-6 sm:pt-8">
               <Button
                 size="lg"
                 onClick={() => setOpen(true)}
                 variant="outline"
-                className="h-12 w-full border-primary/40 bg-background/40 px-6 text-base font-semibold text-foreground backdrop-blur hover:bg-primary/10 hover:text-foreground"
+                className="h-auto min-h-12 w-full whitespace-normal border-primary/40 bg-background/40 px-4 py-3 text-sm font-semibold leading-snug text-foreground backdrop-blur hover:bg-primary/10 hover:text-foreground sm:px-6 sm:text-base"
               >
-                Upgrade to Premium Bill Alerts <ArrowRight className="ml-1 h-4 w-4" />
+                Upgrade to Premium Bill Alerts <ArrowRight className="ml-1 inline h-4 w-4 shrink-0" />
               </Button>
             </div>
           </Card>
@@ -202,13 +205,13 @@ function PricingPage() {
 
       {/* FAQ */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <div className="text-center">
             <p className="eyebrow-blue">Loyalty & Conflict-Free</p>
-            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">Straight answers, no fine print</h2>
+            <h2 className="mt-2 font-display text-2xl font-bold sm:text-4xl">Straight answers, no fine print</h2>
           </div>
 
-          <Accordion type="single" collapsible className="mt-10 space-y-3">
+          <Accordion type="single" collapsible className="mt-8 space-y-3 sm:mt-10">
             <FaqItem
               value="q1"
               q="What stops me from taking your AI's advice and switching manually offline?"
@@ -230,15 +233,15 @@ function PricingPage() {
 
       {/* CTA */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold sm:text-4xl">No upfront cost. No conflict. No catch.</h2>
-          <p className="mt-3 text-muted-foreground">
+        <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8">
+          <h2 className="font-display text-2xl font-bold sm:text-4xl">No upfront cost. No conflict. No catch.</h2>
+          <p className="mt-3 text-sm text-muted-foreground sm:text-base">
             Scan in 2 minutes. If we can't find you $500+ in savings, you pay $0.
           </p>
           <Button
             onClick={() => setOpen(true)}
             size="lg"
-            className="mt-6 h-12 bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 glow-green"
+            className="mt-6 h-auto min-h-12 w-full max-w-md whitespace-normal bg-primary px-4 py-3 text-sm font-semibold leading-snug text-primary-foreground hover:bg-primary/90 glow-green sm:w-auto sm:px-6 sm:text-base"
           >
             Launch My Free $500+ Savings Scan
           </Button>
@@ -254,9 +257,9 @@ function PricingPage() {
 
 function TrustBadge({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1.5 text-xs text-muted-foreground">
-      <span className="text-muted-foreground/80">{icon}</span>
-      {label}
+    <div className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-2 text-xs leading-snug text-muted-foreground sm:w-auto sm:py-1.5">
+      <span className="shrink-0 text-muted-foreground/80">{icon}</span>
+      <span className="text-center sm:text-left">{label}</span>
     </div>
   );
 }
@@ -276,12 +279,12 @@ function FaqItem({ value, q, a }: { value: string; q: string; a: string }) {
   return (
     <AccordionItem
       value={value}
-      className="overflow-hidden rounded-xl border border-border bg-surface px-5"
+      className="overflow-hidden rounded-xl border border-border bg-surface px-4 sm:px-5"
     >
-      <AccordionTrigger className="text-left text-base font-semibold text-foreground hover:no-underline">
+      <AccordionTrigger className="py-4 text-left text-sm font-semibold leading-snug text-foreground hover:no-underline sm:text-base">
         {q}
       </AccordionTrigger>
-      <AccordionContent className="text-sm leading-relaxed text-muted-foreground">{a}</AccordionContent>
+      <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">{a}</AccordionContent>
     </AccordionItem>
   );
 }
@@ -304,29 +307,34 @@ function ValueCalculator() {
 
   return (
     <section className="border-t border-border bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--tl-blue)" }}>
             The Value Calculator
           </p>
-          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+          <h2 className="mt-2 font-display text-2xl font-bold sm:text-4xl">
             See how the $500+ target is built
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-3 text-sm text-muted-foreground sm:text-base">
             Move the slider to your typical monthly household bills and watch our AI baseline projections
             update in real time.
           </p>
         </div>
 
-        <div className="mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-10">
-          <label className="block text-sm font-medium text-muted-foreground">
+        <div className="mt-8 rounded-2xl border border-border bg-surface p-4 sm:mt-10 sm:rounded-3xl sm:p-10">
+          <label className="block text-sm font-medium leading-relaxed text-muted-foreground">
             Select your estimated monthly household bills (energy, mobile, NBN, insurance,
             subscriptions):
           </label>
-          <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-            <span>$200</span>
-            <span className="font-display text-2xl font-bold text-foreground">{fmt(bills)}<span className="text-sm font-medium text-muted-foreground"> / mo</span></span>
-            <span>$2,000</span>
+          <div className="mt-5 space-y-3">
+            <p className="text-center font-display text-3xl font-bold text-foreground sm:text-2xl">
+              {fmt(bills)}
+              <span className="text-base font-medium text-muted-foreground sm:text-sm"> / mo</span>
+            </p>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>$200</span>
+              <span>$2,000</span>
+            </div>
           </div>
           <Slider
             value={[bills]}
@@ -337,7 +345,7 @@ function ValueCalculator() {
             className="mt-3"
           />
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
             <CalcBlock
               icon={<Zap className="h-5 w-5" />}
               tone="var(--tl-green)"
@@ -370,13 +378,15 @@ function ValueCalculator() {
             />
           </div>
 
-          <div className="mt-8 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-6 text-center sm:p-8">
+          <div className="mt-6 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-transparent to-transparent p-5 text-center sm:mt-8 sm:p-8">
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
               Your Estimated Net Savings
             </p>
-            <p className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            <p className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-5xl">
               <span style={{ color: "var(--tl-green)" }}>+{fmt(total)} AUD</span>
-              <span className="text-xl font-semibold text-muted-foreground"> / year</span>
+              <span className="block text-base font-semibold text-muted-foreground sm:mt-0 sm:inline sm:text-xl">
+                {" "}/ year
+              </span>
             </p>
             <p className="mt-2 text-xs text-muted-foreground">
               Baseline projection. Actual results depend on your live Open Banking data.
@@ -400,7 +410,7 @@ function CalcBlock({
   line: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-background/40 p-5">
+    <div className="rounded-xl border border-border bg-background/40 p-4 sm:p-5">
       <div
         className="grid h-9 w-9 place-items-center rounded-lg"
         style={{ background: `${tone}1F`, color: tone }}
@@ -436,6 +446,7 @@ function useCountUp(target: number, durationMs = 1800, start = false) {
 }
 
 function SavingsMission() {
+  const isMobile = useIsMobile();
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -470,12 +481,14 @@ function SavingsMission() {
   ];
 
   const W = 800;
-  const H = 280;
-  const PAD_L = 40;
-  const PAD_R = 20;
-  const PAD_T = 20;
-  const PAD_B = 36;
+  const H = isMobile ? 300 : 280;
+  const PAD_L = isMobile ? 56 : 44;
+  const PAD_R = isMobile ? 16 : 20;
+  const PAD_T = 28;
+  const PAD_B = isMobile ? 44 : 36;
   const maxV = 22; // in $M
+  const labelSize = isMobile ? 9 : 10;
+  const markerSize = isMobile ? 9 : 11;
   const xStep = (W - PAD_L - PAD_R) / (points.length - 1);
   const yFor = (v: number) => PAD_T + (H - PAD_T - PAD_B) * (1 - v / maxV);
   const xFor = (i: number) => PAD_L + i * xStep;
@@ -501,13 +514,13 @@ function SavingsMission() {
             "radial-gradient(60% 50% at 50% 0%, color-mix(in oklab, var(--tl-green) 14%, transparent), transparent 70%), radial-gradient(40% 40% at 90% 100%, color-mix(in oklab, var(--tl-blue) 12%, transparent), transparent 70%)",
         }}
       />
-      <div ref={ref} className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+      <div ref={ref} className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-muted-foreground">
             <Flag className="h-3.5 w-3.5" style={{ color: "var(--tl-green)" }} />
             The 2026 Mission
           </div>
-          <h2 className="font-display text-3xl font-bold sm:text-4xl">
+          <h2 className="font-display text-2xl font-bold sm:text-4xl">
             Saving Australia{" "}
             <span style={{ color: "var(--tl-green)" }}>$20m</span> by end of 2026
           </h2>
@@ -523,14 +536,14 @@ function SavingsMission() {
         </div>
 
         {/* Animated chart */}
-        <div className="mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-8">
-          <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="mt-8 rounded-2xl border border-border bg-surface p-4 sm:mt-10 sm:rounded-3xl sm:p-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Collective Savings Trajectory
               </p>
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full" style={{ background: "var(--tl-blue)" }} />
                 Today
@@ -542,11 +555,11 @@ function SavingsMission() {
             </div>
           </div>
 
-          <div className="mt-6 w-full overflow-hidden">
+          <div className="-mx-1 mt-5 overflow-x-auto px-1 sm:mx-0 sm:mt-6 sm:overflow-visible">
             <svg
               viewBox={`0 0 ${W} ${H}`}
-              className="h-auto w-full"
-              preserveAspectRatio="none"
+              className="h-auto w-full min-w-[280px]"
+              preserveAspectRatio="xMidYMid meet"
               role="img"
               aria-label="Collective savings trajectory chart"
             >
@@ -576,11 +589,11 @@ function SavingsMission() {
                     strokeWidth={1}
                   />
                   <text
-                    x={PAD_L - 8}
+                    x={PAD_L - 10}
                     y={yFor(g) + 4}
                     textAnchor="end"
                     className="fill-muted-foreground"
-                    style={{ fontSize: 10 }}
+                    style={{ fontSize: labelSize }}
                   >
                     ${g === 0 ? "0" : `${g}m`}
                   </text>
@@ -654,10 +667,10 @@ function SavingsMission() {
                     {p.goal && (
                       <text
                         x={cx}
-                        y={cy - 18}
+                        y={cy - (isMobile ? 14 : 18)}
                         textAnchor="middle"
                         className="fill-foreground"
-                        style={{ fontSize: 11, fontWeight: 700 }}
+                        style={{ fontSize: markerSize, fontWeight: 700 }}
                       >
                         $20m mission
                       </text>
@@ -665,20 +678,20 @@ function SavingsMission() {
                     {p.current && (
                       <text
                         x={cx}
-                        y={cy - 18}
+                        y={cy - (isMobile ? 14 : 18)}
                         textAnchor="middle"
                         className="fill-foreground"
-                        style={{ fontSize: 11, fontWeight: 700 }}
+                        style={{ fontSize: markerSize, fontWeight: 700 }}
                       >
                         we are here
                       </text>
                     )}
                     <text
                       x={cx}
-                      y={H - PAD_B + 18}
+                      y={H - PAD_B + (isMobile ? 16 : 18)}
                       textAnchor="middle"
                       className="fill-muted-foreground"
-                      style={{ fontSize: 10 }}
+                      style={{ fontSize: labelSize }}
                     >
                       {p.label}
                     </text>
@@ -688,7 +701,7 @@ function SavingsMission() {
             </svg>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
             <StatCard
               icon={<Users className="h-5 w-5" />}
               tone="var(--tl-blue)"
@@ -738,7 +751,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-5 transition-transform hover:-translate-y-0.5"
+      className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-4 transition-transform sm:p-5 hover:-translate-y-0.5"
       style={{
         boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tone} 12%, transparent)`,
       }}
@@ -751,7 +764,7 @@ function StatCard({
       </div>
       <p className="mt-4 text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
       <p
-        className="mt-1 font-display text-3xl font-bold tracking-tight tabular-nums"
+        className="mt-1 font-display text-2xl font-bold tracking-tight tabular-nums sm:text-3xl"
         style={{ color: tone }}
       >
         {value}
