@@ -304,7 +304,7 @@ function ProgressArc() {
           <path d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`} fill="none" stroke="url(#arcgrad)" strokeWidth="14" strokeLinecap="round" strokeDasharray={`${Math.PI * R * progress}, ${Math.PI * R}`} />
           <circle cx={px} cy={py} r="10" fill={tone.c} stroke="#0E0F12" strokeWidth="3" />
           <text x={cx} y={cy - 20} textAnchor="middle" fontFamily="Inter" fontSize="11" fill="#8E8E93" letterSpacing="2">3 YEAR SAVINGS</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fontFamily="Inter" fontSize="28" fontWeight="700" fill="#F5F5F7">${Math.round(progress * 10000).toLocaleString()}</text>
+          <text x={cx} y={cy + 10} textAnchor="middle" fontFamily="Inter" fontSize="28" fontWeight="700" fill="#F5F5F7">${Math.round(1500 + (progress - 0.25) * (10000 - 1500) / (0.95 - 0.25)).toLocaleString()}</text>
         </svg>
 
         <div className="mt-2 flex justify-between text-[10px] text-muted-foreground">
